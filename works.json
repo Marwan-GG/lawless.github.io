@@ -1,0 +1,28 @@
+[
+  {
+    "title": "PROJECT ALPHA",
+    "tagline": "Visual Design / 2026",
+    "description": "This project has a description and two images.",
+    "media": [
+      { "type": "image", "url": "https://via.placeholder.com/800x450" },
+      { "type": "image", "url": "https://via.placeholder.com/800x450" }
+    ]
+  },
+  {
+    "title": "PROJECT BETA",
+    "tagline": "Motion Graphics / 2025",
+    "description": "", 
+    "media": [
+      { "type": "video", "url": "https://www.w3schools.com/html/mov_bbb.mp4" },
+      { "type": "image", "url": "https://via.placeholder.com/400x600" }
+    ]
+  },
+  {
+    "title": "PROJECT GAMMA",
+    "tagline": "Photography / 2024",
+    "description": "Just one big image here.",
+    "media": [
+      { "type": "image", "url": "https://via.placeholder.com/1200x600" }
+    ]
+  }
+]
