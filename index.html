@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Portfolio Pixelated</title>
+  <title>Desert Pixel Portfolio</title>
   <style>
     body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; }
     canvas { display: block; }
@@ -24,7 +24,7 @@
       font-size: 1.1rem;
       letter-spacing: 3px;
       text-transform: uppercase;
-      border-left: 2px solid #ff0000;
+      border-left: 2px solid #ffaa00; /* Warm golden border */
       padding-left: 10px;
       margin-bottom: 10px;
     }
@@ -34,7 +34,7 @@
       flex-direction: column;
       gap: 10px;
       font-size: 0.85rem;
-      color: #888;
+      color: #bbb;
     }
 
     .nav-links span {
@@ -82,70 +82,109 @@
 
     // --- SCENE SETUP ---
     const scene = new THREE.Scene();
+    // Desert Sunset Background Color
+    scene.background = new THREE.Color(0xffa570); 
+
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
     camera.position.set(7, 4, 7);
-    camera.lookAt(0, 2, 0);
+    camera.lookAt(0, 1.5, 0); // Focus slightly higher
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap; // Softer shadows
     document.body.appendChild(renderer.domElement);
 
     // --- POST-PROCESSING ---
     const composer = new EffectComposer(renderer);
     composer.addPass(new RenderPass(scene, camera));
-
-    // Pixel size 6 is a good starting point
-    const pixelatedPass = new RenderPixelatedPass(6, scene, camera);
+    // Pixel size 8 for a more pronounced "retro" desert feel
+    const pixelatedPass = new RenderPixelatedPass(8, scene, camera);
     composer.addPass(pixelatedPass);
 
     // --- OBJECTS ---
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(20, 20),
-      new THREE.MeshStandardMaterial({ color: 0x111111 })
-    );
+    // Sand Floor
+    const sandGeometry = new THREE.PlaneGeometry(100, 100, 10, 10);
+    const sandMaterial = new THREE.MeshStandardMaterial({ 
+      color: 0xc2b280, // Beige sand tone
+      roughness: 0.9,
+      metalness: 0.0
+    });
+    const floor = new THREE.Mesh(sandGeometry, sandMaterial);
     floor.rotation.x = -Math.PI / 2;
     floor.receiveShadow = true;
     scene.add(floor);
 
-    const torusKnot = new THREE.Mesh(
-      new THREE.TorusKnotGeometry(1, 0.3, 100, 16),
-      new THREE.MeshStandardMaterial({ color: 0xff0000, metalness: 0.6, roughness: 0.2 })
-    );
-    torusKnot.position.y = 2;
+    // Placeholder Object (Now Sand Color)
+    const geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
+    const material = new THREE.MeshStandardMaterial({ 
+      color: 0xd9b382, // Warm copper/sand tone
+      metalness: 0.1, 
+      roughness: 0.7 
+    });
+    const torusKnot = new THREE.Mesh(geometry, material);
+    // Start slightly high
+    torusKnot.position.y = 2.5;
     torusKnot.castShadow = true;
     scene.add(torusKnot);
 
     // --- LIGHTS ---
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); // Brighter ambient
     scene.add(ambientLight);
 
-    const spotLight = new THREE.SpotLight(0xffffff, 500);
-    spotLight.position.set(5, 10, 5);
+    // Golden Sunset Spotlight
+    const spotLight = new THREE.SpotLight(0xffddaa, 600); 
+    spotLight.position.set(5, 12, 5);
+    spotLight.angle = 0.5;
+    spotLight.penumbra = 0.3;
+    spotLight.decay = 2;
+    spotLight.distance = 100;
     spotLight.castShadow = true;
-    spotLight.target = torusKnot;
+    
+    // Improve shadow quality
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+    
     scene.add(spotLight);
+    spotLight.target = torusKnot;
 
     // --- GUI MENU SETUP ---
     const gui = new GUI();
-    
     const pixelFolder = gui.addFolder('Pixel Settings');
-    pixelFolder.add(pixelatedPass, 'pixelSize', 1, 32, 1);
+    pixelFolder.add(pixelatedPass, 'pixelSize', 1, 32, 1).name('Pixel Density');
+
+    const sceneFolder = gui.addFolder('Desert Scene');
+    sceneFolder.addColor(scene, 'background').name('Sky Color');
+    sceneFolder.addColor(sandMaterial, 'color').name('Sand Color');
 
     const lightFolder = gui.addFolder('Spotlight Settings');
-    lightFolder.add(spotLight, 'intensity', 0, 2000);
-    lightFolder.addColor(spotLight, 'color');
+    lightFolder.addColor(spotLight, 'color').name('Sun Color');
+    lightFolder.add(spotLight, 'intensity', 0, 3000);
 
-    const objectFolder = gui.addFolder('Object Settings');
-    objectFolder.addColor(torusKnot.material, 'color').name('Torus Color');
+    // --- ANIMATION WITH SAND INTERACTION ---
+    const clock = new THREE.Clock(); // Required to track time for smooth animation
 
-    // --- ANIMATION ---
     function animate() {
       requestAnimationFrame(animate);
-      torusKnot.rotation.y += 0.01;
-      
-      // CRITICAL: Use composer.render() instead of renderer.render()
+      const elapsedTime = clock.getElapsedTime();
+
+      // Slow continuous rotation
+      torusKnot.rotation.y += 0.005;
+
+      // 1. BOUNCE: Subtle vertical movement (using cosine for smooth up/down)
+      const bobOffset = Math.cos(elapsedTime * 0.5) * 0.15; 
+
+      // 2. SINK: Slowly decrease base height over time (starts at 2.5, targets 0.5)
+      // This makes the object look like it's getting heavy and sinking.
+      const sinkSpeed = 0.015;
+      const targetBaseY = 0.5;
+      const baseHeight = THREE.MathUtils.lerp(torusKnot.position.y, targetBaseY, sinkSpeed * 0.05);
+
+      // Apply combined motion
+      torusKnot.position.y = baseHeight + bobOffset;
+
+      // CRITICAL: Post-Processing Render
       composer.render();
     }
     animate();
