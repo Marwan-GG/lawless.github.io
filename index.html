@@ -10,17 +10,19 @@
   <style>
     :root {
       --accent: #26c9df;
-      --text-dim: #444; /* Darker grey for the footer anchor */
+      --text-dim: #444; 
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body { 
+    /* CHANGE 1: Locked to single frame, no scrolling */
+    body, html { 
       background: #000; 
       font-family: 'Inter', -apple-system, sans-serif; 
       color: white;
-      min-height: 200vh;
-      overflow-x: hidden;
+      height: 100%;
+      width: 100%;
+      overflow: hidden; 
     }
 
     #transition-overlay {
@@ -161,13 +163,13 @@
 
     .footer-text {
       font-size: 0.65rem;
-      color: #444 !important; /* Forced grey */
+      color: #444 !important; 
       letter-spacing: 2px;
       text-transform: uppercase;
-      pointer-events: none; /* Text never reacts to mouse */
+      pointer-events: none; 
     }
 
-    .content-wrapper { position: relative; z-index: 2; width: 100%; padding-top: 100vh; }
+    .content-wrapper { position: relative; z-index: 2; width: 100%; }
 
     @media (max-width: 768px) {
       .header-center { top: 80px; font-size: 1.2rem; }
@@ -292,7 +294,6 @@
     let geometry, material, points = null;
 
     const generateGalaxy = () => {
-      // Sync UI Accent Color to the Inside Color
       document.documentElement.style.setProperty('--accent', params.insideColor);
 
       if(points !== null) { geometry.dispose(); material.dispose(); scene.remove(points); }
@@ -325,15 +326,32 @@
 
     generateGalaxy();
 
-    // GUI - CLEANED & RENAMED
+    // GUI
     const gui = new GUI();
-    gui.close(); // Starts closed
+    gui.close(); 
     gui.addColor(params, 'insideColor').name('Core Colour').onFinishChange(generateGalaxy);
     gui.addColor(params, 'outsideColor').name('Edge Colour').onFinishChange(generateGalaxy);
 
+    // CHANGE 2: DRAG INTERACTION LOGIC
+    let isDragging = false;
+    let previousMouseX = 0;
+
+    window.addEventListener('mousedown', () => { isDragging = true; });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    window.addEventListener('mousemove', (e) => {
+      if (isDragging && points) {
+        const deltaX = e.clientX - previousMouseX;
+        points.rotation.y += deltaX * 0.005; 
+      }
+      previousMouseX = e.clientX;
+    });
+
+    // CHANGE 3: ANIMATION SYNC
     function animate() {
       requestAnimationFrame(animate);
-      if (points) points.rotation.y += 0.0005;
+      if (points && !isDragging) {
+        points.rotation.y += 0.0005;
+      }
       renderer.render(scene, camera);
     }
     animate();
