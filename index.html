@@ -231,10 +231,17 @@
     import * as THREE from 'three';
     import { GUI } from 'lil-gui';
 
-    // FADE TRANSITION
+    // FADE TRANSITION & BACK BUTTON FIX
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
+
+      // Fix for stuck black screen when using browser back button
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          overlay.style.opacity = '0';
+        }
+      });
 
       document.querySelectorAll('.transition-link').forEach(link => {
         link.addEventListener('click', (e) => {
@@ -338,7 +345,7 @@
     const autoSpeed = 0.0005;
     const friction = 0.95; 
 
-    // Galaxy only listens if you click the canvas directly
+    // Targeted only to canvas so buttons aren't interrupted
     renderer.domElement.addEventListener('mousedown', () => { isDragging = true; });
     window.addEventListener('mouseup', () => { isDragging = false; });
     
