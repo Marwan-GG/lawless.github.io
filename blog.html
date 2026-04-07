@@ -35,7 +35,7 @@
       transition: opacity 0.6s ease-in-out;
     }
 
-    /* Navigation - Synced */
+    /* Navigation - Synced with Home & Works */
     .main-nav { 
       position: fixed; 
       top: 40px; 
@@ -110,7 +110,7 @@
     .blog-title { font-family: 'JetBrains Mono', monospace; font-size: 3rem; margin-bottom: 10px; }
     .blog-subtitle { color: var(--text-dim); font-size: 1.1rem; }
 
-    /* The List Style */
+    /* The Dynamic List Style */
     .blog-list {
       display: flex;
       flex-direction: column;
@@ -129,9 +129,7 @@
       transition: 0.3s ease;
     }
 
-    .blog-item:hover {
-      border-color: var(--accent);
-    }
+    .blog-item:hover { border-color: var(--accent); }
 
     .post-name {
       font-size: 1.3rem;
@@ -141,7 +139,7 @@
 
     .blog-item:hover .post-name {
       color: var(--accent);
-      transform: translateX(5px);
+      transform: translateX(10px);
     }
 
     .post-date {
@@ -176,7 +174,7 @@
     @media (max-width: 768px) {
       .main-nav { top: auto; bottom: 120px; left: 20px; }
       .blog-container { max-width: 90%; }
-      .blog-title { font-size: 2rem; }
+      .blog-title { font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -200,40 +198,12 @@
   <div class="content-wrapper">
     <main class="blog-container">
       <header class="blog-header">
-        <h1 class="blog-title">Thoughts</h1>
-        <p class="blog-subtitle">Reflections on making, thinking, and design.</p>
+        <h1 class="blog-title">BLOG</h1>
+        <p class="blog-subtitle">Anything that pops into my head, ideas, inspirations, random rants about games, etc.</p>
       </header>
 
-      <div class="blog-list">
-        <a href="#" class="blog-item">
-          <span class="post-name">Before the frame</span>
-          <span class="post-date">Mar 20, 2026</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">Perspective through distance</span>
-          <span class="post-date">Dec 20, 2025</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">Work precedes opportunity</span>
-          <span class="post-date">Sep 18, 2025</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">Principles of good animation</span>
-          <span class="post-date">Sep 13, 2025</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">Constraints</span>
-          <span class="post-date">Sep 4, 2025</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">Blue-collar design</span>
-          <span class="post-date">Aug 20, 2025</span>
-        </a>
-        <a href="#" class="blog-item">
-          <span class="post-name">More effort ≠ better quality</span>
-          <span class="post-date">Aug 2, 2025</span>
-        </a>
-      </div>
+      <div class="blog-list" id="blog-list">
+        </div>
     </main>
   </div>
 
@@ -271,6 +241,20 @@
           setTimeout(() => { window.location.href = target; }, 600);
         });
       });
+
+      // DYNAMIC BLOG LOADER
+      fetch('blogs.json')
+        .then(response => response.json())
+        .then(data => {
+          const listContainer = document.getElementById('blog-list');
+          listContainer.innerHTML = data.map(post => `
+            <a href="${post.link}" target="_blank" class="blog-item">
+              <span class="post-name">${post.title}</span>
+              <span class="post-date">${post.date}</span>
+            </a>
+          `).join('');
+        })
+        .catch(err => console.error('Bartholomew Error: JSON check failed.', err));
     });
 
     // EMAIL LOGIC
