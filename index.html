@@ -10,7 +10,7 @@
   <style>
     :root {
       --accent: #26c9df;
-      --text-dim: #666;
+      --text-dim: #444; /* Darker grey for the footer anchor */
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -23,7 +23,6 @@
       overflow-x: hidden;
     }
 
-    /* TRANSITION OVERLAY */
     #transition-overlay {
       position: fixed;
       top: 0;
@@ -36,15 +35,8 @@
       transition: opacity 0.6s ease-in-out;
     }
 
-    canvas { 
-      display: block; 
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      z-index: 1; 
-    }
+    canvas { display: block; position: fixed; top: 0; left: 0; z-index: 1; }
     
-    /* Navigation */
     .main-nav { 
       position: fixed; 
       top: 40px; 
@@ -62,6 +54,7 @@
       text-transform: uppercase; 
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
+      transition: border-color 0.3s ease;
     }
 
     .nav-links { 
@@ -69,7 +62,7 @@
       flex-direction: column; 
       gap: 12px; 
       font-size: 0.85rem; 
-      color: var(--text-dim); 
+      color: #666; 
     }
 
     .nav-links a { 
@@ -80,12 +73,8 @@
       width: fit-content; 
     }
 
-    .nav-links a:hover { 
-      color: #fff; 
-      transform: translateX(5px);
-    }
+    .nav-links a:hover { color: #fff; transform: translateX(5px); }
 
-    /* Copy Link Logic */
     .copy-link {
       color: var(--accent);
       cursor: pointer;
@@ -105,7 +94,6 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* Typewriter Header */
     .header-center {
       position: fixed;
       top: 40px;
@@ -118,6 +106,7 @@
       font-size: 1.8rem;
       pointer-events: none;
       white-space: nowrap;
+      transition: color 0.3s ease;
     }
 
     .cursor {
@@ -131,7 +120,6 @@
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* Footer */
     footer {
       position: fixed;
       bottom: 0;
@@ -142,6 +130,7 @@
       text-align: center;
       pointer-events: none;
     }
+
     .footer-content {
       pointer-events: auto;
       display: flex;
@@ -149,19 +138,19 @@
       align-items: center;
       gap: 15px;
     }
-    
+
     .social-links {
       display: flex;
       gap: 20px;
       align-items: center;
     }
 
-    .social-icon { 
-      width: 24px; 
-      height: 24px; 
+    .social-icon {
+      width: 24px;
+      height: 24px;
       stroke: #444; 
       fill: none;
-      transition: all 0.3s ease; 
+      transition: all 0.3s ease-in-out;
     }
     
     .social-links a:hover .social-icon { 
@@ -170,14 +159,13 @@
       filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
     }
 
-    .footer-text { 
-      font-size: 0.65rem; 
-      color: #444; 
-      letter-spacing: 2px; 
-      text-transform: uppercase; 
-      transition: color 0.3s ease; 
+    .footer-text {
+      font-size: 0.65rem;
+      color: #444 !important; /* Forced grey */
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      pointer-events: none; /* Text never reacts to mouse */
     }
-    .footer-content:hover .footer-text { color: #fff; }
 
     .content-wrapper { position: relative; z-index: 2; width: 100%; padding-top: 100vh; }
 
@@ -222,7 +210,6 @@
         <a href="https://steamcommunity.com/id/gunslinging1/" target="_blank">
           <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 2a10 10 0 0 0-9.92 8.79l3.5 1.54a3.5 3.5 0 0 1 6.3 2.11l4.47 2a3.5 3.5 0 1 1-.44 1.27l-4.47-2a3.5 3.5 0 0 1-5.18-3.04l-3.53-1.55A10 10 0 1 0 12 2z"/>
-            <circle cx="12" cy="14.5" r="1"/>
           </svg>
         </a>
       </div>
@@ -243,7 +230,7 @@
     import * as THREE from 'three';
     import { GUI } from 'lil-gui';
 
-    // FADE TRANSITION LOGIC
+    // FADE TRANSITION
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
@@ -281,7 +268,7 @@
       });
     });
 
-    // THREE.JS GALAXY
+    // GALAXY ENGINE
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(0, 6, 12);
@@ -293,13 +280,21 @@
     document.body.appendChild(renderer.domElement);
 
     const params = {
-      count: 70000, radius: 12, branches: 3, spin: 1, randomness: 0.3,
-      insideColor: '#26c9df', outsideColor: '#151ce0'
+      count: 70000, 
+      radius: 12, 
+      branches: 3, 
+      spin: 1, 
+      randomness: 0.3,
+      insideColor: '#26c9df', 
+      outsideColor: '#151ce0'
     };
 
     let geometry, material, points = null;
 
     const generateGalaxy = () => {
+      // Sync UI Accent Color to the Inside Color
+      document.documentElement.style.setProperty('--accent', params.insideColor);
+
       if(points !== null) { geometry.dispose(); material.dispose(); scene.remove(points); }
       geometry = new THREE.BufferGeometry();
       const positions = new Float32Array(params.count * 3);
@@ -330,11 +325,11 @@
 
     generateGalaxy();
 
-    // GUI CONTROLS
+    // GUI - CLEANED & RENAMED
     const gui = new GUI();
-    gui.addColor(params, 'insideColor').onFinishChange(generateGalaxy);
-    gui.addColor(params, 'outsideColor').onFinishChange(generateGalaxy);
-    gui.add(params, 'count').min(100).max(100000).step(100).onFinishChange(generateGalaxy);
+    gui.close(); // Starts closed
+    gui.addColor(params, 'insideColor').name('Core Colour').onFinishChange(generateGalaxy);
+    gui.addColor(params, 'outsideColor').name('Edge Colour').onFinishChange(generateGalaxy);
 
     function animate() {
       requestAnimationFrame(animate);
