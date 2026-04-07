@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 
   <style>
-    /* EXACT CSS FROM YOUR HOME PAGE */
     :root {
       --accent: #26c9df;
       --text-dim: #666;
@@ -20,11 +19,10 @@
       background: #000; 
       font-family: 'Inter', -apple-system, sans-serif; 
       color: white;
-      min-height: 100vh; /* Changed from 200vh to fit content */
+      min-height: 100vh;
       overflow-x: hidden;
     }
 
-    /* Transition Overlay */
     #transition-overlay {
       position: fixed;
       top: 0;
@@ -37,7 +35,7 @@
       transition: opacity 0.6s ease-in-out;
     }
 
-    /* Navigation - 1:1 Copy */
+    /* Navigation */
     .main-nav { 
       position: fixed; 
       top: 40px; 
@@ -90,7 +88,6 @@
       width: fit-content;
     }
     .copy-link:hover { transform: translateX(5px); }
-    .copy-link .label { transition: opacity 0.3s ease, transform 0.3s ease; }
     .copy-link .status { 
       position: absolute; left: 0; opacity: 0; color: #4ade80; font-weight: bold;
       pointer-events: none; white-space: nowrap; transform: translateY(5px);
@@ -99,13 +96,63 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* WORKS CONTENT ELEMENTS */
+    /* Footer Styles */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 10;
+      padding: 30px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .footer-content {
+      pointer-events: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .social-icon {
+      width: 24px;
+      height: 24px;
+      stroke: #444; 
+      fill: none;
+      transition: all 0.3s ease-in-out;
+      filter: drop-shadow(0 0 0px transparent);
+    }
+    
+    /* ICON GLOW ONLY */
+    .social-links a:hover .social-icon { 
+      stroke: #fff; 
+      transform: translateY(-3px);
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6));
+    }
+
+    .footer-text {
+      font-size: 0.65rem;
+      color: #444; 
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      /* Notice: No transition or hover effect added here */
+    }
+
+    /* Content wrapper */
     .content-wrapper { 
       position: relative; 
       z-index: 2; 
       width: 100%; 
-      padding-top: 100px; /* Adjusted from 100vh */
-      padding-bottom: 100px;
+      padding-top: 100px;
+      padding-bottom: 150px; 
     }
 
     .works-container {
@@ -134,9 +181,8 @@
     }
     .project-description { color: #aaa; font-size: 1rem; line-height: 1.8; }
 
-    /* Mobile Adjustments */
     @media (max-width: 768px) {
-      .main-nav { top: auto; bottom: 100px; left: 20px; }
+      .main-nav { top: auto; bottom: 120px; left: 20px; }
       .works-container { max-width: 90%; }
     }
   </style>
@@ -161,26 +207,46 @@
   <div class="content-wrapper">
     <main class="works-container">
       <section class="project-entry">
-        <h1 class="project-title">RISKY FISHING</h1>
+        <h1 class="project-title">PROJECT ALPHA</h1>
         <p class="project-tagline">Visual Design / 2026</p>
         <div class="project-media-grid">
           <img src="https://via.placeholder.com/800x450" alt="Work">
           <img src="https://via.placeholder.com/800x450" alt="Work">
         </div>
-        <p class="project-description">Using the exact Home page skeleton to ensure zero alignment shifting.</p>
+        <p class="project-description">Hover the icons below to see the glow.</p>
       </section>
     </main>
   </div>
 
+  <footer>
+    <div class="footer-content">
+      <div class="social-links">
+        <a href="https://www.youtube.com/@lawless-mg" target="_blank">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.42a2.78 2.78 0 0 0-1.94 2C1 8.14 1 12 1 12s0 3.86.46 5.58a2.78 2.78 0 0 0 1.94 2c1.72.42 8.6.42 8.6.42s6.88 0 8.6-.42a2.78 2.78 0 0 0 1.94-2C23 15.86 23 12 23 12s0-3.86-.46-5.58z"></path>
+            <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"></polygon>
+          </svg>
+        </a>
+        <a href="https://steamcommunity.com/id/gunslinging1/" target="_blank">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zM5.57 15.312c.181.56.516 1.057.962 1.428l2.977 4.195c.2.282.528.453.878.465a1.08 1.08 0 0 0 .918-.541l2.583-4.423a3.52 3.52 0 0 0 1.348-.157l4.496 2.002a.545.545 0 0 0 .736-.264l.872-1.96a.545.545 0 0 0-.265-.737l-4.475-1.99a3.535 3.535 0 0 0 .114-2.887 3.535 3.535 0 0 0-4.475-1.99l-2.002-4.496a.545.545 0 0 0-.737-.265l-1.96.872a.545.545 0 0 0-.264.737l2.002 4.496a3.535 3.535 0 0 0-3.708 6.185z"></path>
+            <circle cx="12" cy="12" r="1.5"></circle>
+          </svg>
+        </a>
+      </div>
+      <div class="footer-text">©2026 / All Right Reserved / LAWLESS / MARWAN GEBRIEL</div>
+    </div>
+  </footer>
+
   <script>
-    // FADE LOGIC
+    // FADE & NAV LOGIC
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
       document.querySelectorAll('.transition-link').forEach(link => {
         link.addEventListener('click', (e) => {
-          if (link.href === window.location.href) return;
+          if (link.getAttribute('href') === window.location.pathname.split('/').pop()) return;
           e.preventDefault();
           const target = link.href;
           overlay.style.opacity = '1';
@@ -189,7 +255,7 @@
       });
     });
 
-    // COPY EMAIL LOGIC
+    // EMAIL LOGIC
     const emailBtn = document.getElementById('copyEmail');
     const myEmail = 'maroggebriel@gmail.com';
     emailBtn.addEventListener('click', () => {
