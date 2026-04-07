@@ -35,6 +35,33 @@
       transition: opacity 0.6s ease-in-out; 
     }
 
+    /* --- LIGHTBOX OVERLAY --- */
+    #lightbox {
+      position: fixed;
+      z-index: 10000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #lightbox.active { display: flex; opacity: 1; }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 85%;
+      border-radius: 4px;
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    #lightbox.active img { transform: scale(1); }
+
     /* --- SIDEBAR NAVIGATION --- */
     .main-nav { 
       position: fixed; 
@@ -46,7 +73,6 @@
       gap: 20px; 
       width: var(--nav-width);
     }
-
     .nav-logo { 
       font-weight: 800; 
       font-size: 1.2rem; 
@@ -55,7 +81,6 @@
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
     }
-
     .nav-links { 
       display: flex; 
       flex-direction: column; 
@@ -63,15 +88,7 @@
       font-size: 0.85rem; 
       color: var(--text-dim); 
     }
-
-    .nav-links a { 
-      text-decoration: none; 
-      color: inherit; 
-      cursor: pointer; 
-      transition: 0.3s ease; 
-      width: fit-content; 
-    }
-
+    .nav-links a { text-decoration: none; color: inherit; transition: 0.3s ease; width: fit-content; }
     .nav-links a:hover { color: #fff; transform: translateX(5px); }
 
     .copy-link {
@@ -101,7 +118,6 @@
       padding-top: 100px; 
       padding-bottom: 200px; 
     }
-
     .works-container { 
       max-width: 900px; 
       margin-left: calc(var(--nav-width) + 100px); 
@@ -110,21 +126,9 @@
       flex-direction: column; 
       gap: 150px; 
     }
-
     .project-entry { width: 100%; }
-    .project-title { 
-      font-family: 'JetBrains Mono', monospace; 
-      font-size: 2.2rem; 
-      margin-bottom: 8px; 
-      text-transform: uppercase;
-    }
-    .project-tagline { 
-      color: var(--text-dim); 
-      font-size: 0.8rem; 
-      margin-bottom: 30px; 
-      text-transform: uppercase; 
-      letter-spacing: 2px; 
-    }
+    .project-title { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; margin-bottom: 8px; text-transform: uppercase; }
+    .project-tagline { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
     
     .project-media-grid { 
       display: grid; 
@@ -135,30 +139,17 @@
     .project-media-grid img, .project-media-grid video, .project-media-grid iframe { 
       width: 100%; height: auto; border: 1px solid #1a1a1a; border-radius: 4px; 
     }
+    .project-media-grid img { cursor: zoom-in; transition: transform 0.3s ease, filter 0.3s ease; }
+    .project-media-grid img:hover { filter: brightness(1.2); }
 
     .project-description { color: #aaa; font-size: 1rem; line-height: 1.8; max-width: 750px; }
 
     /* --- FOOTER --- */
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-      padding: 30px;
-      text-align: center;
-      pointer-events: none;
-    }
-    .footer-content {
-      pointer-events: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
-    }
+    footer { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 10; padding: 30px; text-align: center; pointer-events: none; }
+    .footer-content { pointer-events: auto; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .social-links { display: flex; gap: 20px; align-items: center; }
     .social-icon { width: 24px; height: 24px; stroke: #444; fill: none; transition: all 0.3s ease-in-out; }
-    .social-links a:hover .social-icon { stroke: #fff; transform: translateY(-3px); filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)); }
+    .social-links a:hover .social-icon { stroke: #fff; transform: translateY(-3px); filter: drop-shadow(0 0 8px rgba(255,255,255,0.6)); }
     .footer-text { font-size: 0.65rem; color: #444 !important; letter-spacing: 2px; text-transform: uppercase; pointer-events: none; }
 
     @media (max-width: 1100px) {
@@ -170,6 +161,10 @@
 <body>
 
   <div id="transition-overlay"></div>
+
+  <div id="lightbox">
+    <img src="" alt="Enlarged view">
+  </div>
 
   <nav class="main-nav">
     <div class="nav-logo">MG. Lawless</div>
@@ -210,9 +205,22 @@
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = lightbox.querySelector('img');
+
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
-      // HYBRID RENDERER (Local + YouTube)
+      // GLOBAL LIGHTBOX FUNCTIONS
+      window.openLightbox = (url) => {
+        lightboxImg.src = url;
+        lightbox.classList.add('active');
+      };
+
+      lightbox.addEventListener('click', () => {
+        lightbox.classList.remove('active');
+      });
+
+      // HYBRID RENDERER
       fetch('works.json')
         .then(res => res.json())
         .then(data => {
@@ -237,8 +245,8 @@
                   if(item.type === 'video') {
                     return `<video src="${item.url}" controls loop muted playsinline style="width:100%; border-radius:4px;"></video>`;
                   }
-                  // Image/GIF Case
-                  return `<img src="${item.url}" alt="${project.title}" style="width:100%; border-radius:4px;">`;
+                  // Image/GIF Case (with Lightbox Click)
+                  return `<img src="${item.url}" alt="${project.title}" style="width:100%; border-radius:4px;" onclick="openLightbox('${item.url}')">`;
                 }).join('')}
               </div>
               ${project.description ? `<p class="project-description">${project.description}</p>` : ''}
@@ -246,7 +254,7 @@
           `).join('');
         });
 
-      // TRANSITIONS
+      // NAV TRANSITIONS
       document.querySelectorAll('.transition-link').forEach(link => {
         link.addEventListener('click', (e) => {
           if (link.href === window.location.href) return;
