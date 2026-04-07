@@ -6,115 +6,128 @@
   <title>Blog | MG. Lawless</title>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
-
   <style>
-    :root {
-      --accent: #26c9df;
-      --text-dim: #666;
+    :root { 
+      --accent: #26c9df; 
+      --text-dim: #666; 
+      --nav-width: 280px; 
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    
     body { 
       background: #000; 
       font-family: 'Inter', -apple-system, sans-serif; 
-      color: white;
-      min-height: 100vh;
-      overflow-x: hidden;
+      color: white; 
+      min-height: 100vh; 
+      overflow-x: hidden; 
     }
 
-    #transition-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      z-index: 9999;
-      pointer-events: none;
-      transition: opacity 0.6s ease-in-out;
+    #transition-overlay { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #000; 
+      z-index: 9999; 
+      pointer-events: none; 
+      transition: opacity 0.6s ease-in-out; 
     }
 
-    /* Navigation - Synced with Home & Works */
+    /* --- SIDEBAR NAVIGATION (Synced with Works) --- */
     .main-nav { 
       position: fixed; 
-      top: 40px; 
-      left: 40px; 
+      top: 80px; 
+      left: 60px; 
+      width: var(--nav-width);
       z-index: 10; 
       display: flex; 
       flex-direction: column; 
-      gap: 20px; 
+      gap: 30px; 
     }
 
     .nav-logo { 
       font-weight: 800; 
-      font-size: 1.2rem; 
+      font-size: 1.3rem; 
       letter-spacing: 3px; 
       text-transform: uppercase; 
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
+      margin-bottom: 10px;
     }
 
     .nav-links { 
       display: flex; 
       flex-direction: column; 
-      gap: 12px; 
-      font-size: 0.85rem; 
+      gap: 15px; 
+      font-size: 0.9rem; 
       color: var(--text-dim); 
     }
 
     .nav-links a { 
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer; 
+      text-decoration: none; 
+      color: inherit; 
       transition: 0.3s ease; 
       width: fit-content; 
     }
 
-    .nav-links a:hover { color: #fff; transform: translateX(5px); }
-
-    .copy-link {
-      color: var(--accent);
-      cursor: pointer;
-      position: relative;
-      height: 1.2rem; 
-      display: flex;
-      align-items: center;
-      transition: color 0.4s ease-in-out, transform 0.3s ease;
-      width: fit-content;
+    .nav-links a:hover { 
+      color: #fff; 
+      transform: translateX(8px); 
     }
-    .copy-link:hover { transform: translateX(5px); }
+
+    .copy-link { 
+      color: var(--accent); 
+      cursor: pointer; 
+      position: relative; 
+      height: 1.2rem; 
+      display: flex; 
+      align-items: center; 
+      transition: 0.3s; 
+      width: fit-content; 
+    }
+    .copy-link:hover { transform: translateX(8px); }
     .copy-link .status { 
-      position: absolute; left: 0; opacity: 0; color: #4ade80; font-weight: bold;
-      pointer-events: none; white-space: nowrap; transform: translateY(5px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      position: absolute; left: 0; opacity: 0; color: #4ade80; font-weight: bold; 
+      transition: 0.3s; transform: translateY(5px); 
     }
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* Blog Content Area */
+    /* --- BLOG CONTENT AREA (SHIFTED RIGHT) --- */
     .content-wrapper { 
       position: relative; 
       z-index: 2; 
       width: 100%; 
-      padding-top: 100px;
-      padding-bottom: 180px; 
+      padding-top: 80px; 
+      padding-bottom: 200px; 
     }
 
-    .blog-container {
-      max-width: 50%;
-      margin: 0 auto;
+    .blog-container { 
+      max-width: 800px; 
+      margin-left: calc(var(--nav-width) + 120px); 
+      margin-right: 60px;
     }
 
     .blog-header { margin-bottom: 60px; }
-    .blog-title { font-family: 'JetBrains Mono', monospace; font-size: 3rem; margin-bottom: 10px; }
-    .blog-subtitle { color: var(--text-dim); font-size: 1.1rem; }
+    .blog-title { 
+      font-family: 'JetBrains Mono', monospace; 
+      font-size: 3rem; 
+      margin-bottom: 15px; 
+    }
+    .blog-subtitle { 
+      color: var(--text-dim); 
+      font-size: 1.1rem; 
+      max-width: 500px;
+      line-height: 1.6;
+    }
 
-    /* The Dynamic List Style */
+    /* --- THE DYNAMIC LIST STYLE --- */
     .blog-list {
       display: flex;
       flex-direction: column;
-      gap: 25px;
+      gap: 0; /* Gap managed by padding/border */
       margin-top: 50px;
     }
 
@@ -124,12 +137,14 @@
       align-items: baseline;
       text-decoration: none;
       color: white;
-      padding-bottom: 15px;
+      padding: 25px 0;
       border-bottom: 1px solid #1a1a1a;
       transition: 0.3s ease;
     }
 
-    .blog-item:hover { border-color: var(--accent); }
+    .blog-item:hover { 
+      border-color: var(--accent); 
+    }
 
     .post-name {
       font-size: 1.3rem;
@@ -148,33 +163,59 @@
       font-size: 0.9rem;
     }
 
-    /* Footer - Synced */
-    footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      z-index: 10;
-      padding: 30px;
-      text-align: center;
-      pointer-events: none;
+    /* --- FOOTER (Synced) --- */
+    footer { 
+      position: fixed; 
+      bottom: 0; 
+      left: 0; 
+      width: 100%; 
+      z-index: 10; 
+      padding: 30px; 
+      text-align: center; 
+      pointer-events: none; 
     }
-    .footer-content {
-      pointer-events: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 15px;
+    .footer-content { 
+      pointer-events: auto; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 15px; 
     }
-    .social-links { display: flex; gap: 20px; align-items: center; }
-    .social-icon { width: 24px; height: 24px; stroke: #444; fill: none; transition: all 0.3s ease-in-out; }
-    .social-links a:hover .social-icon { stroke: #fff; transform: translateY(-3px); filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)); }
-    .footer-text { font-size: 0.65rem; color: #444 !important; letter-spacing: 2px; text-transform: uppercase; pointer-events: none; }
+    .social-links { display: flex; gap: 25px; }
+    .social-icon { width: 24px; height: 24px; stroke: #444; fill: none; transition: 0.3s; }
+    .social-links a:hover .social-icon { 
+      stroke: #fff; 
+      transform: translateY(-3px); 
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.6)); 
+    }
+    .footer-text { 
+      font-size: 0.65rem; 
+      color: #444 !important; 
+      letter-spacing: 2px; 
+      text-transform: uppercase; 
+    }
 
-    @media (max-width: 768px) {
-      .main-nav { top: auto; bottom: 120px; left: 20px; }
-      .blog-container { max-width: 90%; }
+    /* --- RESPONSIVE FIX --- */
+    @media (max-width: 1200px) {
+      .main-nav { 
+        position: relative; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        padding: 40px;
+        margin-bottom: 40px;
+      }
+      .blog-container { 
+        margin-left: 40px; 
+        margin-right: 40px;
+        max-width: calc(100% - 80px);
+      }
+    }
+
+    @media (max-width: 600px) {
       .blog-title { font-size: 2.2rem; }
+      .blog-item { flex-direction: column; gap: 10px; }
+      .post-date { font-size: 0.75rem; }
     }
   </style>
 </head>
@@ -198,8 +239,8 @@
   <div class="content-wrapper">
     <main class="blog-container">
       <header class="blog-header">
-        <h1 class="blog-title">BLOG</h1>
-        <p class="blog-subtitle">Anything that pops into my head, ideas, inspirations, random rants about games, etc.</p>
+        <h1 class="blog-title">Thoughts</h1>
+        <p class="blog-subtitle">Reflections on making, thinking, and design.</p>
       </header>
 
       <div class="blog-list" id="blog-list">
@@ -227,42 +268,41 @@
   </footer>
 
   <script>
-    // FADE & NAV LOGIC
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
-      document.querySelectorAll('.transition-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          if (link.href === window.location.href) return;
-          e.preventDefault();
-          const target = link.href;
-          overlay.style.opacity = '1';
-          setTimeout(() => { window.location.href = target; }, 600);
-        });
-      });
-
-      // DYNAMIC BLOG LOADER
+      // DATA RENDERER (BLOGS)
       fetch('blogs.json')
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-          const listContainer = document.getElementById('blog-list');
-          listContainer.innerHTML = data.map(post => `
+          const container = document.getElementById('blog-list');
+          container.innerHTML = data.map(post => `
             <a href="${post.link}" target="_blank" class="blog-item">
               <span class="post-name">${post.title}</span>
               <span class="post-date">${post.date}</span>
             </a>
           `).join('');
         })
-        .catch(err => console.error('Bartholomew Error: JSON check failed.', err));
-    });
+        .catch(err => console.error("Bartholomew Error: Check your blogs.json!", err));
 
-    // EMAIL LOGIC
-    const emailBtn = document.getElementById('copyEmail');
-    emailBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
-        emailBtn.classList.add('copied');
-        setTimeout(() => emailBtn.classList.remove('copied'), 2000);
+      // TRANSITION LOGIC
+      document.querySelectorAll('.transition-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          if (link.href === window.location.href) return;
+          e.preventDefault();
+          overlay.style.opacity = '1';
+          setTimeout(() => { window.location.href = link.href; }, 600);
+        });
+      });
+
+      // EMAIL LOGIC
+      const emailBtn = document.getElementById('copyEmail');
+      emailBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
+          emailBtn.classList.add('copied');
+          setTimeout(() => emailBtn.classList.remove('copied'), 2000);
+        });
       });
     });
   </script>
