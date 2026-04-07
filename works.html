@@ -35,7 +35,7 @@
       transition: opacity 0.6s ease-in-out; 
     }
 
-    /* --- ORIGINAL DNA NAVIGATION --- */
+    /* --- SIDEBAR NAVIGATION --- */
     .main-nav { 
       position: fixed; 
       top: 40px; 
@@ -93,7 +93,7 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* --- CONTENT AREA (SHIFTED) --- */
+    /* --- CONTENT AREA --- */
     .content-wrapper { 
       position: relative; 
       z-index: 2; 
@@ -132,13 +132,13 @@
       gap: 20px; 
       margin-bottom: 25px; 
     }
-    .project-media-grid img, .project-media-grid video { 
+    .project-media-grid img, .project-media-grid video, .project-media-grid iframe { 
       width: 100%; height: auto; border: 1px solid #1a1a1a; border-radius: 4px; 
     }
 
     .project-description { color: #aaa; font-size: 1rem; line-height: 1.8; max-width: 750px; }
 
-    /* --- ORIGINAL DNA FOOTER --- */
+    /* --- FOOTER --- */
     footer {
       position: fixed;
       bottom: 0;
@@ -212,6 +212,7 @@
       const overlay = document.getElementById('transition-overlay');
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
+      // HYBRID RENDERER (Local + YouTube)
       fetch('works.json')
         .then(res => res.json())
         .then(data => {
@@ -222,8 +223,22 @@
               <p class="project-tagline">${project.tagline}</p>
               <div class="project-media-grid">
                 ${project.media.map(item => {
-                  if(item.type === 'video') return `<video src="${item.url}" controls loop muted playsinline></video>`;
-                  return `<img src="${item.url}" alt="${project.title}">`;
+                  // YouTube Case
+                  if(item.type === 'video' && item.url.includes('youtube.com')) {
+                    return `
+                      <div style="width:100%; aspect-ratio:16/9;">
+                        <iframe src="${item.url}" 
+                          style="width:100%; height:100%; border:none; border-radius:4px;" 
+                          allow="autoplay; encrypted-media" allowfullscreen>
+                        </iframe>
+                      </div>`;
+                  }
+                  // Local MP4 Case
+                  if(item.type === 'video') {
+                    return `<video src="${item.url}" controls loop muted playsinline style="width:100%; border-radius:4px;"></video>`;
+                  }
+                  // Image/GIF Case
+                  return `<img src="${item.url}" alt="${project.title}" style="width:100%; border-radius:4px;">`;
                 }).join('')}
               </div>
               ${project.description ? `<p class="project-description">${project.description}</p>` : ''}
@@ -231,6 +246,7 @@
           `).join('');
         });
 
+      // TRANSITIONS
       document.querySelectorAll('.transition-link').forEach(link => {
         link.addEventListener('click', (e) => {
           if (link.href === window.location.href) return;
@@ -240,6 +256,7 @@
         });
       });
 
+      // EMAIL CLIPBOARD
       const emailBtn = document.getElementById('copyEmail');
       emailBtn.addEventListener('click', () => {
         navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
