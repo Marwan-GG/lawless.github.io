@@ -36,12 +36,12 @@
       transition: opacity 0.6s ease-in-out;
     }
 
-    /* Navigation - PIXEL PERFECT SYNC */
+    /* NAVIGATION - COPIED EXACTLY FROM YOUR HOME CODE */
     .main-nav { 
       position: fixed; 
       top: 40px; 
       left: 40px; 
-      z-index: 10; 
+      z-index: 100; 
       display: flex; 
       flex-direction: column; 
       gap: 20px; 
@@ -54,12 +54,13 @@
       text-transform: uppercase; 
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
+      line-height: 1.2; /* Added to match Home exactly */
     }
 
     .nav-links { 
       display: flex; 
       flex-direction: column; 
-      gap: 12px; 
+      gap: 12px; /* Matched to Home */
       font-size: 0.85rem; 
       color: var(--text-dim); 
     }
@@ -97,11 +98,11 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* Centered Container */
+    /* CONTENT AREA */
     .content-container {
       max-width: 50%; 
       margin: 0 auto; 
-      padding: 100px 0; 
+      padding: 120px 0; 
       display: flex;
       flex-direction: column;
       gap: 150px; 
@@ -126,6 +127,7 @@
 
     .project-description { color: #aaa; font-size: 1rem; line-height: 1.8; }
 
+    /* MOBILE SYNC */
     @media (max-width: 768px) {
       .main-nav { top: auto; bottom: 100px; left: 20px; }
       .content-container { max-width: 90%; padding-top: 60px; }
@@ -157,38 +159,28 @@
         <img src="https://via.placeholder.com/800x450" alt="Work">
         <img src="https://via.placeholder.com/800x450" alt="Work">
       </div>
-      <p class="project-description">This description will fade in beautifully along with the rest of the page.</p>
+      <p class="project-description">Clean, centered work area.</p>
     </section>
   </main>
 
   <script>
-    // FADE SCRIPT
+    // FADE LOGIC
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
-      
-      // Fade out the black overlay on load
-      setTimeout(() => {
-        overlay.style.opacity = '0';
-      }, 100);
+      setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
-      // Intercept link clicks to fade back in
       document.querySelectorAll('.transition-link').forEach(link => {
         link.addEventListener('click', (e) => {
-          // If clicking the same page, don't trigger fade out
           if (link.href === window.location.href) return;
-
           e.preventDefault();
           const target = link.href;
           overlay.style.opacity = '1';
-
-          setTimeout(() => {
-            window.location.href = target;
-          }, 600); // Matches the 0.6s CSS transition
+          setTimeout(() => { window.location.href = target; }, 600);
         });
       });
     });
 
-    // COPY EMAIL LOGIC
+    // EMAIL LOGIC
     const emailBtn = document.getElementById('copyEmail');
     const myEmail = 'maroggebriel@gmail.com';
     emailBtn.addEventListener('click', () => {
