@@ -30,7 +30,7 @@
       z-index: 1; 
     }
     
-    /* Navigation */
+    /* Desktop Navigation */
     .main-nav { 
       position: fixed; 
       top: 40px; 
@@ -72,7 +72,7 @@
       transform: translateX(5px);
     }
 
-    /* Copy Link - Smoother Transition */
+    /* Copy Link */
     .copy-link {
       color: var(--accent);
       cursor: pointer;
@@ -86,9 +86,7 @@
     
     .copy-link:hover { transform: translateX(5px); }
 
-    .copy-link .label {
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
+    .copy-link .label { transition: opacity 0.3s ease, transform 0.3s ease; }
 
     .copy-link .status { 
       position: absolute;
@@ -102,15 +100,8 @@
       transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
-    .copy-link.copied .label { 
-      opacity: 0; 
-      transform: translateY(-5px); 
-    }
-
-    .copy-link.copied .status { 
-      opacity: 1; 
-      transform: translateY(0); 
-    }
+    .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
+    .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
     /* Typewriter */
     .header-center {
@@ -141,7 +132,7 @@
 
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* Sticky Footer */
+    /* Footer */
     footer {
       position: fixed;
       bottom: 0;
@@ -165,8 +156,8 @@
       width: 24px;
       height: 24px;
       display: block;
-      stroke: #444; /* Gray default */
-      transition: stroke 0.3s ease, opacity 0.3s ease;
+      stroke: #444;
+      transition: stroke 0.3s ease;
     }
     
     .footer-content:hover .yt-icon { stroke: #fff; }
@@ -174,10 +165,33 @@
 
     .footer-text {
       font-size: 0.65rem;
-      color: #444; /* Gray default */
+      color: #444;
       letter-spacing: 2px;
       text-transform: uppercase;
       transition: color 0.3s ease;
+    }
+
+    /* --- MOBILE REFINEMENTS --- */
+    @media (max-width: 768px) {
+      .header-center {
+        top: 80px; /* Move down to avoid overlapping the GUI tab */
+        font-size: 1.2rem; /* Scale down slightly for narrow screens */
+      }
+      .cursor {
+        height: 1.1rem;
+      }
+      .main-nav {
+        top: auto;
+        bottom: 100px; /* Move navigation to bottom left area */
+        left: 20px;
+        gap: 15px;
+      }
+      .nav-logo {
+        font-size: 1rem;
+      }
+      footer {
+        padding-bottom: 20px;
+      }
     }
 
     .content-wrapper { position: relative; z-index: 2; width: 100%; padding-top: 100vh; }
