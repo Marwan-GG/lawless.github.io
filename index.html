@@ -55,7 +55,6 @@
       text-transform: uppercase; 
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
-      transition: border-color 0.3s ease;
     }
 
     .nav-links { 
@@ -95,6 +94,7 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
+    /* --- HEADER & DIALOGUE SYSTEM --- */
     .header-center {
       position: fixed;
       top: 40px;
@@ -106,42 +106,53 @@
       color: var(--accent);
       font-size: 1.8rem;
       pointer-events: none;
-      white-space: nowrap;
-      transition: color 0.3s ease;
       text-align: center;
+      width: 90%;
+      max-width: 800px; /* Prevents text from hitting sidebars */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* --- DIALOGUE SYSTEM STYLES --- */
+    #typewriter {
+      white-space: normal; /* Allows text wrapping */
+      display: inline-block;
+      line-height: 1.4;
+    }
+
     #prompt-click {
       display: block;
       font-size: 0.8rem;
       color: #fff;
-      margin-top: 15px;
+      margin-top: 20px;
       opacity: 0;
       cursor: pointer;
       pointer-events: auto;
       transition: opacity 0.5s ease, transform 0.3s ease;
       letter-spacing: 3px;
-      font-family: 'JetBrains Mono', monospace;
     }
     #prompt-click.visible { opacity: 0.5; }
     #prompt-click:hover { opacity: 1; transform: scale(1.05); }
 
     #dialogue-container {
-      margin-top: 25px;
+      margin-top: 20px;
       display: none;
       flex-direction: column;
       align-items: center;
       gap: 15px;
       pointer-events: auto;
+      width: 100%;
     }
+
     .dialogue-options {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-family: 'JetBrains Mono', monospace;
+      width: fit-content;
     }
+
     .dialogue-btn {
       color: rgba(255, 255, 255, 0.6);
       cursor: pointer;
@@ -209,10 +220,7 @@
       color: #444 !important; 
       letter-spacing: 2px;
       text-transform: uppercase;
-      pointer-events: none; 
     }
-
-    .content-wrapper { position: relative; z-index: 2; width: 100%; }
 
     @media (max-width: 768px) {
       .header-center { top: 80px; font-size: 1.2rem; }
@@ -246,8 +254,6 @@
     </div>
   </nav>
 
-  <div class="content-wrapper"></div>
-
   <footer>
     <div class="footer-content">
       <div class="social-links">
@@ -280,7 +286,6 @@
     import * as THREE from 'three';
     import { GUI } from 'lil-gui';
 
-    // DIALOGUE ENGINE DATA
     const dialogueData = {
       start: {
         text: "System Online. Connections stable.",
@@ -352,7 +357,7 @@
       });
     });
 
-    // TYPEWRITER & DIALOGUE LOGIC
+    // DIALOGUE ENGINE
     const typewriterElement = document.getElementById('typewriter');
     const promptClick = document.getElementById('prompt-click');
     const diagContainer = document.getElementById('dialogue-container');
@@ -371,11 +376,8 @@
       }
     }
 
-    // First greeting
     setTimeout(() => {
-      type(50, () => {
-        promptClick.classList.add('visible');
-      });
+      type(50, () => { promptClick.classList.add('visible'); });
     }, 1500);
 
     promptClick.addEventListener('click', () => {
@@ -404,7 +406,7 @@
       charIndex = 0;
       optionsList.innerHTML = "";
       
-      type(30, () => {
+      type(25, () => {
         node.options.forEach(opt => {
           const btn = document.createElement('div');
           btn.className = 'dialogue-btn';
@@ -415,7 +417,6 @@
       });
     }
 
-    // EMAIL COPY
     const emailBtn = document.getElementById('copyEmail');
     emailBtn.addEventListener('click', () => {
       navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
