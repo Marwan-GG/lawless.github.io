@@ -11,12 +11,16 @@
     ]
   },
   {
-    "title": "PROJECT BETA",
-    "tagline": "Motion Graphics / 2025",
-    "description": "", 
+    "title": "PuppyCat's Quest",
+    "tagline": "Speedrun Platforming Game // Environment, Animation, Art, Illustration, UI, Development, Level Design // 2023",
+    "description": "PuppyCat's Quest is a solo game which was inspired by a Netflix original: Bee and PuppyCat. You control PuppyCat and make it through a stunning seemingly peaceful environment in this speed-run platformer. This game premiered in an exhibition at the German University in Cairo.
+", 
     "media": [
-      { "type": "video", "url": "https://www.w3schools.com/html/mov_bbb.mp4" },
-      { "type": "image", "url": "https://via.placeholder.com/400x600" }
+      { "type": "video", "url": "assets/pcqvid.mp4" },
+      { "type": "image", "url": "assets/pcq1.png" },
+      { "type": "image", "url": "assets/pcq2.png" },
+      { "type": "image", "url": "assets/pcq3.png" },
+      { "type": "image", "url": "assets/pcq4.gif" }
     ]
   },
   {
