@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
 
   <style>
-     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
     :root {
       --accent: #26c9df;
       --text-dim: #444; 
@@ -39,14 +38,23 @@
 
     canvas { display: block; position: fixed; top: 0; left: 0; z-index: 1; outline: none; }
     
-    .main-nav { 
-      position: fixed; 
-      top: 40px; 
-      left: 40px; 
-      z-index: 10; 
+    /* --- NEW UNIFIED TOP NAVIGATION --- */
+    header {
+      position: fixed;
+      top: 40px;
+      left: 40px;
+      right: 40px;
+      z-index: 10;
+      display: flex;
+      align-items: flex-start; /* Aligns logo and typewriter to the same top line */
+      gap: 40px;
+    }
+
+    .nav-sidebar {
       display: flex; 
       flex-direction: column; 
-      gap: 20px; 
+      gap: 20px;
+      min-width: 150px;
     }
 
     .nav-logo { 
@@ -56,6 +64,7 @@
       text-transform: uppercase; 
       border-left: 3px solid var(--accent); 
       padding-left: 15px; 
+      line-height: 1.2;
     }
 
     .nav-links { 
@@ -95,46 +104,32 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* --- THE ZERO-HEIGHT DIALOGUE SYSTEM --- */
-    .header-center {
-      position: fixed;
-      top: 15%; 
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
+    /* --- ALIGNED DIALOGUE SYSTEM --- */
+    .console-area {
+      flex-grow: 1;
       font-family: 'JetBrains Mono', monospace;
       font-weight: bold;
       color: var(--accent);
       font-size: 1.8rem;
       pointer-events: none;
-      text-align: center;
-      width: 90%;
-      max-width: 900px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .text-wrapper {
-      display: contents; /* Makes the wrapper "invisible" to layout logic */
+      /* Ensures text starts exactly level with the logo text */
+      padding-top: 0; 
+      margin-top: -4px; 
     }
 
     #typewriter {
       white-space: normal;
-      line-height: 1; 
-      position: relative;
+      display: inline;
     }
 
     .cursor {
       display: inline-block;
       width: 2px; 
-      height: 1.5rem;
+      height: 1.6rem;
       background: var(--accent);
-      margin-left: 6px;
+      margin-left: 8px;
       animation: blink 1s infinite;
-      vertical-align: middle;
-      /* Absolute ensures it can't push the container height */
-      position: absolute; 
+      vertical-align: text-bottom;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -142,7 +137,7 @@
       display: block;
       font-size: 0.85rem;
       color: #fff;
-      margin-top: 25px;
+      margin-top: 15px;
       opacity: 0;
       cursor: pointer;
       pointer-events: auto;
@@ -155,16 +150,14 @@
     #dialogue-container {
       display: none;
       flex-direction: column;
-      align-items: center;
       pointer-events: auto;
-      width: 100%;
-      margin-top: 40px; 
+      margin-top: 25px;
     }
 
     .dialogue-options {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       font-size: 0.9rem;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -174,7 +167,7 @@
       cursor: pointer;
       transition: all 0.2s ease;
       text-align: left;
-      padding: 4px 10px;
+      width: fit-content;
     }
     .dialogue-btn:hover {
       color: var(--accent);
@@ -227,8 +220,8 @@
     }
 
     @media (max-width: 768px) {
-      .header-center { top: 15%; font-size: 1.3rem; }
-      .main-nav { top: auto; bottom: 120px; left: 20px; }
+      header { top: 20px; left: 20px; flex-direction: column; gap: 20px; }
+      .console-area { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -236,30 +229,28 @@
 
   <div id="transition-overlay"></div>
 
-  <div class="header-center">
-    <div class="text-wrapper">
-      <span id="typewriter"></span><span class="cursor"></span>
+  <header>
+    <div class="nav-sidebar">
+      <div class="nav-logo">MG. Lawless</div>
+      <nav class="nav-links">
+        <a href="./" class="transition-link" style="color: #fff;">Home</a>
+        <a href="works.html" class="transition-link">Works</a>
+        <a href="blog.html" class="transition-link">Blog</a>
+        <div class="copy-link" id="copyEmail">
+          <span class="label">Copy Email</span>
+          <span class="status">Email Copied ✓</span>
+        </div>
+      </nav>
     </div>
-    
-    <span id="prompt-click">[ INITIALIZE ]</span>
-    
-    <div id="dialogue-container">
-      <div class="dialogue-options" id="options-list"></div>
-    </div>
-  </div>
 
-  <nav class="main-nav">
-    <div class="nav-logo">MG. Lawless</div>
-    <div class="nav-links">
-      <a href="./" class="transition-link" style="color: #fff;">Home</a>
-      <a href="works.html" class="transition-link">Works</a>
-      <a href="blog.html" class="transition-link">Blog</a>
-      <div class="copy-link" id="copyEmail">
-        <span class="label">Copy Email</span>
-        <span class="status">Email Copied ✓</span>
+    <div class="console-area">
+      <span id="typewriter"></span><span class="cursor"></span>
+      <span id="prompt-click">[ INITIALIZE ]</span>
+      <div id="dialogue-container">
+        <div class="dialogue-options" id="options-list"></div>
       </div>
     </div>
-  </nav>
+  </header>
 
   <footer>
     <div class="footer-content">
