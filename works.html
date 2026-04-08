@@ -211,10 +211,15 @@
       const wrapper = coverElement.parentElement;
       const video = wrapper.querySelector('video');
       
-      video.muted = false; // Unmute on play
+      video.muted = false; 
+      video.controls = true; // Enables control bar
       video.play();
+      
       coverElement.style.opacity = '0';
-      setTimeout(() => { coverElement.style.display = 'none'; }, 400);
+      setTimeout(() => { 
+        coverElement.style.display = 'none'; 
+        video.style.pointerEvents = 'auto'; // Allows clicking the controls
+      }, 400);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -249,7 +254,7 @@
               <p class="project-tagline">${project.tagline}</p>
               <div class="project-media-grid">
                 ${project.media.map(item => {
-                  // IF YOUTUBE
+                  // YOUTUBE
                   if(item.type === 'video' && item.url.includes('youtube.com')) {
                     const videoId = item.url.includes('embed/') 
                       ? item.url.split('embed/')[1].split('?')[0] 
@@ -267,18 +272,18 @@
                       </div>`;
                   }
                   
-                  // IF LOCAL VIDEO (MP4)
+                  // LOCAL VIDEO (MP4)
                   if(item.type === 'video') {
                     return `
                       <div class="video-wrapper">
                         <div class="video-cover" style="background-image: url('${item.poster || ''}')" onclick="playLocalVideo(this)">
                           <div class="custom-play-btn"></div>
                         </div>
-                        <video src="${item.url}" loop muted playsinline></video>
+                        <video src="${item.url}" loop muted playsinline style="pointer-events: none;"></video>
                       </div>`;
                   }
                   
-                  // IF IMAGE
+                  // IMAGE
                   return `<img src="${item.url}" alt="${project.title}" onclick="openLightbox('${item.url}')">`;
                 }).join('')}
               </div>
