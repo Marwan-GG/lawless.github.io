@@ -258,7 +258,7 @@
                       </div>`;
                   }
                   if(item.type === 'video') {
-                    return `<video src="${item.url}" controls loop muted playsinline style="width:100%; border-radius:4px;"></video>`;
+                    return `<video src="${item.url}" poster="${item.poster || ''}" controls loop muted playsinline style="width:100%; border-radius:4px;"></video>`;
                   }
                   return `<img src="${item.url}" alt="${project.title}" onclick="openLightbox('${item.url}')">`;
                 }).join('')}
