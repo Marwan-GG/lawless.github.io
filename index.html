@@ -94,7 +94,7 @@
     .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
     .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
-    /* --- THE GHOST-FREE DIALOGUE SYSTEM --- */
+    /* --- THE ZERO-HEIGHT DIALOGUE SYSTEM --- */
     .header-center {
       position: fixed;
       top: 15%; 
@@ -114,20 +114,26 @@
       align-items: center;
     }
 
+    .text-wrapper {
+      display: contents; /* Makes the wrapper "invisible" to layout logic */
+    }
+
     #typewriter {
       white-space: normal;
-      display: inline;
-      line-height: 1.2;
+      line-height: 1; 
+      position: relative;
     }
 
     .cursor {
       display: inline-block;
-      width: 2px; /* Sleek 2px width */
+      width: 2px; 
       height: 1.5rem;
       background: var(--accent);
-      margin-left: 5px;
+      margin-left: 6px;
       animation: blink 1s infinite;
       vertical-align: middle;
+      /* Absolute ensures it can't push the container height */
+      position: absolute; 
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -135,7 +141,7 @@
       display: block;
       font-size: 0.85rem;
       color: #fff;
-      margin-top: 20px;
+      margin-top: 25px;
       opacity: 0;
       cursor: pointer;
       pointer-events: auto;
@@ -151,13 +157,13 @@
       align-items: center;
       pointer-events: auto;
       width: 100%;
-      margin-top: 30px; /* Pushes options away from the text */
+      margin-top: 40px; 
     }
 
     .dialogue-options {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       font-size: 0.9rem;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -230,7 +236,7 @@
   <div id="transition-overlay"></div>
 
   <div class="header-center">
-    <div>
+    <div class="text-wrapper">
       <span id="typewriter"></span><span class="cursor"></span>
     </div>
     
