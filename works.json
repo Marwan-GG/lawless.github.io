@@ -38,9 +38,9 @@
     "tagline": "Puzzle Platformer // Environmemt // Level Design // Assets",
     "media": [
       { "type": "image", "url": "assets/jim1.png" },
-      { "type": "image", "url": "assets/jim2.jpg" },
+      { "type": "image", "url": "assets/jim2.png" },
       { "type": "image", "url": "assets/jim3.png" },
-      { "type": "image", "url": "assets/jim4.gif" }
+      { "type": "image", "url": "assets/jim4.png" }
     ]
   },
   {
