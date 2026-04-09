@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MG. Lawless</title>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
+  <link rel="preconnect" href="https://www.youtube.com">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
@@ -135,10 +136,10 @@
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-    /* Updated Initialize Text */
+    /* Updated Initialize Text with Blinking Pulse */
     #prompt-click {
       display: inline-block;
-      font-size: 1.2rem; 
+      font-size: 1.5rem; /* Increased size */
       color: #fff;
       margin-top: 25px;
       opacity: 0;
@@ -150,11 +151,19 @@
       font-weight: bold;
       text-transform: uppercase;
     }
+    
     #prompt-click.visible { 
-      opacity: 0.7; 
+      opacity: 0.8; 
       text-shadow: 0 0 15px var(--accent);
+      animation: breathe 2s infinite ease-in-out; /* Blinking/Breathing animation */
     }
-    #prompt-click:hover { opacity: 1; transform: scale(1.05); }
+    
+    @keyframes breathe {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    #prompt-click:hover { opacity: 1; animation: none; transform: scale(1.1); }
 
     #dialogue-container {
       display: none;
@@ -213,22 +222,20 @@
       }
 
       .console-fixed-layer { 
-        width: 100%; 
-        top: 55%; 
+        width: 90%; 
+        top: 50%; 
         transform: translate(-50%, -50%); 
-        padding: 60px 20px;
-        /* Feathered backdrop for readability */
-        background: radial-gradient(
-          circle at center, 
-          rgba(0, 0, 0, 0.85) 0%, 
-          rgba(0, 0, 0, 0.4) 60%, 
-          transparent 100%
-        );
+        padding: 40px 20px;
+        border-radius: 20px;
+        /* Fixed opaque box: Using blur and subtle alpha for better blending */
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 0 40px rgba(0,0,0,0.5);
       } 
 
       .console-text-container { font-size: 1.4rem; }
 
-      /* Bigger GUI for touch */
       .lil-gui {
         --width: 180px !important;
         --widget-height: 40px !important;
@@ -238,7 +245,6 @@
         right: 20px !important;
         left: auto !important;
       }
-      .lil-gui .controller.color .widget { height: 35px !important; }
     }
   </style>
 </head>
@@ -504,7 +510,7 @@
     let previousMouseX = 0;
     let velocity = 0.0005; 
     const autoSpeed = 0.0005;
-    const friction = 0.95; 
+    const friction = 0.985; // Increased inertia (previously 0.95)
 
     renderer.domElement.addEventListener('mousedown', () => { isDragging = true; });
     window.addEventListener('mouseup', () => { isDragging = false; });
