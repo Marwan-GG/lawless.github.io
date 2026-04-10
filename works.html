@@ -6,6 +6,7 @@
   <title>Works | MG. Lawless</title>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
     :root { 
@@ -15,6 +16,7 @@
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; } /* Enables smooth scrolling for index links */
     
     body { 
       background: #000; 
@@ -67,8 +69,45 @@
     .works-title { font-family: 'JetBrains Mono', monospace; font-size: 3rem; margin-bottom: 15px; text-transform: uppercase; }
     .works-subtitle { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; line-height: 1.6; }
 
+    /* --- INDEX STYLING --- */
+    #index-container {
+      position: relative; width: 100%; height: 260px;
+      background: #050505; border: 1px solid #111;
+      border-radius: 4px; margin-top: 40px; overflow: hidden;
+    }
+    #three-canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #index-ui { 
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+      z-index: 2; padding: 35px; pointer-events: none; 
+    }
+    .index-label { 
+      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
+      letter-spacing: 3px; color: var(--accent); margin-bottom: 25px; text-transform: uppercase; 
+    }
+    #auto-index { 
+      display: grid; grid-template-columns: repeat(3, 1fr); 
+      grid-gap: 15px 40px; pointer-events: auto; 
+    }
+    .index-item { 
+      color: #888; text-decoration: none; font-size: 0.85rem; 
+      transition: 0.3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+    }
+    .index-item:hover { color: #fff; transform: translateX(5px); }
+
+    /* --- BACK TO TOP --- */
+    #back-to-top {
+      position: fixed; bottom: 40px; right: 40px; width: 45px; height: 45px;
+      background: rgba(0,0,0,0.8); border: 1px solid var(--accent);
+      color: var(--accent); border-radius: 50%; display: flex;
+      align-items: center; justify-content: center; cursor: pointer;
+      opacity: 0; visibility: hidden; transition: 0.4s ease; z-index: 100;
+      text-decoration: none; font-family: 'JetBrains Mono', monospace;
+    }
+    #back-to-top.visible { opacity: 1; visibility: visible; }
+    #back-to-top:hover { background: var(--accent); color: #000; transform: translateY(-5px); }
+
     .project-list-wrapper { display: flex; flex-direction: column; gap: 150px; }
-    .project-entry { width: 100%; }
+    .project-entry { width: 100%; scroll-margin-top: 100px; }
     .project-title { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; margin-bottom: 8px; text-transform: uppercase; }
     .project-tagline { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
     
@@ -167,6 +206,7 @@
       .works-container { margin: 0 auto; max-width: 90%; }
       .project-media-grid > * { grid-column: span 12 !important; }
       .lightbox-arrow { font-size: 2rem; padding: 10px; }
+      #auto-index { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -198,10 +238,21 @@
       <header class="works-header">
         <h1 class="works-title">WORKS</h1>
         <p class="works-subtitle">A collection of games, art, and digital worlds.</p>
+        
+        <div id="index-container">
+          <div id="three-canvas-container"></div>
+          <div id="index-ui">
+            <div class="index-label">Assortment / Index</div>
+            <div id="auto-index"></div>
+          </div>
+        </div>
       </header>
+
       <div class="project-list-wrapper" id="works-list"></div>
     </main>
   </div>
+
+  <a href="#" id="back-to-top">↑</a>
 
   <footer>
     <div class="footer-content">
@@ -226,6 +277,41 @@
     let allMediaUrls = [];
     let currentMediaIndex = 0;
 
+    // --- THREE.JS INDEX BACKGROUND ---
+    function initIndexParticles() {
+      const container = document.getElementById('three-canvas-container');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(container.offsetWidth, container.offsetHeight);
+      container.appendChild(renderer.domElement);
+
+      const geometry = new THREE.BufferGeometry();
+      const vertices = [];
+      for (let i = 0; i < 400; i++) {
+        vertices.push(THREE.MathUtils.randFloatSpread(1000), THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(800));
+      }
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+      const material = new THREE.PointsMaterial({ color: 0x26c9df, size: 1.5, transparent: true, opacity: 0.2 });
+      const points = new THREE.Points(geometry, material);
+      scene.add(points);
+      camera.position.z = 400;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        points.rotation.y += 0.0008;
+        points.rotation.x += 0.0003;
+        renderer.render(scene, camera);
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        camera.aspect = container.offsetWidth / container.offsetHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+      });
+    }
+
     function playVideo(coverElement) {
       const wrapper = coverElement.parentElement;
       const iframe = wrapper.querySelector('iframe');
@@ -245,6 +331,7 @@
       const overlay = document.getElementById('transition-overlay');
       const lightbox = document.getElementById('lightbox');
       const lightboxImg = document.getElementById('lightboxImg');
+      const backToTop = document.getElementById('back-to-top');
 
       setTimeout(() => { overlay.style.opacity = '0'; }, 100);
 
@@ -274,16 +361,28 @@
         if (e.key === "Escape") lightbox.classList.remove('active');
       });
 
+      // --- SCROLL WATCHER ---
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) backToTop.classList.add('visible');
+        else backToTop.classList.remove('visible');
+      });
+
       fetch('works.json')
         .then(res => res.json())
         .then(data => {
           const container = document.getElementById('works-list');
-          container.innerHTML = data.map(project => {
-            // Collect images only for the lightbox gallery
+          const indexList = document.getElementById('auto-index');
+          
+          // Build Index and Content simultaneously
+          indexList.innerHTML = data.map((project, idx) => `
+            <a href="#proj-${idx}" class="index-item">${project.title}</a>
+          `).join('');
+
+          container.innerHTML = data.map((project, idx) => {
             project.media.forEach(m => { if(m.type === 'image') allMediaUrls.push(m.url); });
 
             return `
-            <section class="project-entry">
+            <section class="project-entry" id="proj-${idx}">
               <h1 class="project-title">${project.title}</h1>
               <p class="project-tagline">${project.tagline}</p>
               <div class="project-media-grid">
@@ -313,6 +412,8 @@
               ${project.description ? `<p class="project-description">${project.description}</p>` : ''}
             </section>
           `}).join('');
+
+          initIndexParticles();
         });
 
       document.getElementById('copyEmail').addEventListener('click', function() {
