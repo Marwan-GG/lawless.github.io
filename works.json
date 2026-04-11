@@ -28,7 +28,7 @@
   },
   {
     "title": "SLINKO",
-    "tagline": "​​​​​​​Fling elemental slimes, trigger wild fusions, and solve tight physics puzzles. Chaos included. // Environment, UI, Gameplay Design, Art Direction, Level Design, Sound Design and Direction",
+    "tagline": "​​​​​​​Fling elemental slimes, and solve tight physics puzzles. // Environment, UI, Gameplay Design, Art Direction, Level Design, Sound Design and Direction",
     "media": [
       { "type": "image", "url": "assets/sl1.png" },
       { "type": "image", "url": "assets/sl2.png" },
@@ -73,7 +73,7 @@
   },
   {
     "title": "Here and Then",
-    "tagline": "A puzzle adventure game where you shift between time to uncover a mystery that's yet to happen. // Environment, Level and Puzzle Design, Gameplay Design, UI, Art Direction, Sound Direction,",
+    "tagline": "A puzzle adventure game with time shifting. // Environment, Level and Puzzle Design, Gameplay Design, UI, Art Direction, Sound Direction,",
     "media": [
       { "type": "image", "url": "assets/time.gif" },
       { "type": "image", "url": "assets/time1.png" },
@@ -126,7 +126,7 @@
   },
   {
     "title": "Interactive, Immersive, Evolving AI Environment",
-    "tagline": "In-Game AI Characters interact with you based on your behaviour and their surroundings. They treat you differently based on their unique personalities and how much they like/trust you.",
+    "tagline": "In-Game AI Characters interact with you based on your behaviour and their surroundings.",
     "media": [
       { "type": "image", "url": "assets/aivr1.png" },
       { "type": "image", "url": "assets/aivr2.png" },
