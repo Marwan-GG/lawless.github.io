@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Works | MG. Lawless</title>
   <link rel="icon" type="image/jpeg" href="favicon.jpg">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700&family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
     :root { 
       --accent: #26c9df; 
       --text-dim: #666; 
@@ -16,7 +15,7 @@
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; } /* Enables smooth scrolling for index links */
+    html { scroll-behavior: smooth; }
     
     body { 
       background: #000; 
@@ -69,30 +68,83 @@
     .works-title { font-family: 'JetBrains Mono', monospace; font-size: 3rem; margin-bottom: 15px; text-transform: uppercase; }
     .works-subtitle { color: var(--text-dim); font-size: 1.1rem; max-width: 600px; line-height: 1.6; }
 
-    /* --- INDEX STYLING --- */
+    /* --- UPDATED TERMINAL INDEX --- */
     #index-container {
-      position: relative; width: 100%; height: 260px;
-      background: #050505; border: 1px solid #111;
-      border-radius: 4px; margin-top: 40px; overflow: hidden;
+      position: relative; 
+      width: 100%; 
+      height: 350px;
+      background: linear-gradient(90deg, #050505 0%, rgba(10,10,10,0.4) 100%); 
+      border-top: 1px solid #111;
+      border-bottom: 1px solid #111;
+      margin-top: 40px; 
+      overflow: hidden;
+      display: flex;
     }
-    #three-canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
     #index-ui { 
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-      z-index: 2; padding: 35px; pointer-events: none; 
+      flex: 1;
+      position: relative;
+      z-index: 2; 
+      padding: 40px; 
+      display: flex;
+      flex-direction: column;
+      /* Masks the bottom of the list for a "fading into data" look */
+      -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
     }
+
     .index-label { 
       font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
-      letter-spacing: 3px; color: var(--accent); margin-bottom: 25px; text-transform: uppercase; 
+      letter-spacing: 5px; color: var(--accent); margin-bottom: 30px; text-transform: uppercase; 
+      opacity: 0.8;
     }
+
     #auto-index { 
-      display: grid; grid-template-columns: repeat(3, 1fr); 
-      grid-gap: 15px 40px; pointer-events: auto; 
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap; /* Allows spilling into next column if too long */
+      max-height: 220px;
+      gap: 12px 60px;
+      pointer-events: auto;
+      counter-reset: item-counter;
+      overflow-y: auto;
+      scrollbar-width: none;
     }
+    #auto-index::-webkit-scrollbar { display: none; }
+
     .index-item { 
-      color: #888; text-decoration: none; font-size: 0.85rem; 
-      transition: 0.3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+      font-family: 'JetBrains Mono', monospace;
+      color: #666; 
+      text-decoration: none; 
+      font-size: 0.8rem; 
+      transition: 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
     }
-    .index-item:hover { color: #fff; transform: translateX(5px); }
+
+    /* System ID prefixes */
+    .index-item::before {
+      counter-increment: item-counter;
+      content: "ID_0" counter(item-counter);
+      font-size: 0.6rem;
+      color: var(--accent);
+      margin-right: 15px;
+      opacity: 0.4;
+    }
+
+    .index-item:hover { 
+      color: #fff; 
+      transform: translateX(8px); 
+    }
+
+    #three-canvas-container { 
+      width: 40%; 
+      height: 100%; 
+      border-left: 1px solid #111;
+      z-index: 1; 
+    }
 
     /* --- BACK TO TOP --- */
     #back-to-top {
@@ -111,7 +163,6 @@
     .project-title { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; margin-bottom: 8px; text-transform: uppercase; }
     .project-tagline { color: var(--text-dim); font-size: 0.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
     
-    /* THE CLEAN TILE GRID */
     .project-media-grid { 
       display: grid;
       grid-template-columns: repeat(12, 1fr); 
@@ -202,11 +253,12 @@
     .footer-text { font-size: 0.65rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
 
     @media (max-width: 1100px) {
+      #index-container { flex-direction: column; height: auto; }
+      #three-canvas-container { width: 100%; height: 200px; border-left: none; border-top: 1px solid #111; }
       .main-nav { position: relative; top: 0; left: 0; padding: 40px; width: 100%; }
       .works-container { margin: 0 auto; max-width: 90%; }
       .project-media-grid > * { grid-column: span 12 !important; }
-      .lightbox-arrow { font-size: 2rem; padding: 10px; }
-      #auto-index { grid-template-columns: repeat(2, 1fr); }
+      #auto-index { flex-wrap: nowrap; max-height: none; }
     }
   </style>
 </head>
@@ -240,11 +292,11 @@
         <p class="works-subtitle">A collection of games, art, and digital worlds.</p>
         
         <div id="index-container">
-          <div id="three-canvas-container"></div>
           <div id="index-ui">
-            <div class="index-label">Index</div>
+            <div class="index-label">System_Index</div>
             <div id="auto-index"></div>
           </div>
+          <div id="three-canvas-container"></div>
         </div>
       </header>
 
@@ -277,7 +329,7 @@
     let allMediaUrls = [];
     let currentMediaIndex = 0;
 
-    // --- THREE.JS INDEX BACKGROUND ---
+    // --- UPDATED THREE.JS: THE DATA CORE ---
     function initIndexParticles() {
       const container = document.getElementById('three-canvas-container');
       const scene = new THREE.Scene();
@@ -286,21 +338,31 @@
       renderer.setSize(container.offsetWidth, container.offsetHeight);
       container.appendChild(renderer.domElement);
 
-      const geometry = new THREE.BufferGeometry();
-      const vertices = [];
-      for (let i = 0; i < 400; i++) {
-        vertices.push(THREE.MathUtils.randFloatSpread(1000), THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(800));
+      // Create a wireframe Sphere (The Core)
+      const geometry = new THREE.IcosahedronGeometry(140, 1);
+      const wireframe = new THREE.WireframeGeometry(geometry);
+      const lineMat = new THREE.LineBasicMaterial({ color: 0x26c9df, transparent: true, opacity: 0.15 });
+      const core = new THREE.LineSegments(wireframe, lineMat);
+      scene.add(core);
+
+      // Add a cloud of orbiting data points
+      const starGeo = new THREE.BufferGeometry();
+      const starPos = [];
+      for(let i=0; i<300; i++) {
+        starPos.push(THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(400), THREE.MathUtils.randFloatSpread(400));
       }
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-      const material = new THREE.PointsMaterial({ color: 0x26c9df, size: 1.5, transparent: true, opacity: 0.2 });
-      const points = new THREE.Points(geometry, material);
-      scene.add(points);
+      starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+      const starMat = new THREE.PointsMaterial({ color: 0x26c9df, size: 1.5, transparent: true, opacity: 0.4 });
+      const stars = new THREE.Points(starGeo, starMat);
+      scene.add(stars);
+
       camera.position.z = 400;
 
       function animate() {
         requestAnimationFrame(animate);
-        points.rotation.y += 0.0008;
-        points.rotation.x += 0.0003;
+        core.rotation.y += 0.004;
+        core.rotation.x += 0.002;
+        stars.rotation.y -= 0.001;
         renderer.render(scene, camera);
       }
       animate();
@@ -361,7 +423,6 @@
         if (e.key === "Escape") lightbox.classList.remove('active');
       });
 
-      // --- SCROLL WATCHER ---
       window.addEventListener('scroll', () => {
         if (window.scrollY > 500) backToTop.classList.add('visible');
         else backToTop.classList.remove('visible');
@@ -373,7 +434,6 @@
           const container = document.getElementById('works-list');
           const indexList = document.getElementById('auto-index');
           
-          // Build Index and Content simultaneously
           indexList.innerHTML = data.map((project, idx) => `
             <a href="#proj-${idx}" class="index-item">${project.title}</a>
           `).join('');
