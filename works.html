@@ -9,56 +9,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
-    :root { 
-      --accent: #26c9df; 
-      --text-dim: #999; 
-      --nav-width: 250px; 
-    }
-    
+    :root { --accent: #26c9df; --text-dim: #999; --nav-width: 250px; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    
-    body { 
-      background: #000; 
-      font-family: 'Inter', -apple-system, sans-serif; 
-      color: white; 
-      min-height: 100vh; 
-      overflow-x: hidden; 
-    }
+    body { background: #000; font-family: 'Inter', sans-serif; color: white; min-height: 100vh; overflow-x: hidden; }
 
-    #transition-overlay { 
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: #000; z-index: 9999; 
-      pointer-events: none; 
-      transition: opacity 0.6s ease-in-out; 
-      opacity: 1; 
-    }
+    #transition-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; pointer-events: none; transition: opacity 0.6s ease; opacity: 1; }
 
-    /* --- NAVIGATION --- */
-    .main-nav { 
-      position: fixed; top: 40px; left: 40px; z-index: 10; 
-      display: flex; flex-direction: column; gap: 20px; width: var(--nav-width);
-    }
-    .nav-logo { 
-      font-weight: 800; font-size: 1.2rem; letter-spacing: 3px; 
-      text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 15px; 
-    }
+    /* --- SIDEBAR --- */
+    .main-nav { position: fixed; top: 40px; left: 40px; z-index: 10; display: flex; flex-direction: column; gap: 20px; width: var(--nav-width); }
+    .nav-logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 3px; text-transform: uppercase; border-left: 3px solid var(--accent); padding-left: 15px; }
     .nav-links { display: flex; flex-direction: column; gap: 12px; font-size: 0.85rem; color: var(--text-dim); }
     .nav-links a { text-decoration: none; color: inherit; transition: 0.3s ease; width: fit-content; }
     .nav-links a:hover { color: #fff; transform: translateX(5px); }
-
-    .copy-link {
-      color: var(--accent); cursor: pointer; position: relative;
-      height: 1.2rem; display: flex; align-items: center;
-      transition: color 0.4s ease-in-out, transform 0.3s ease; width: fit-content;
-    }
-    .copy-link .status { 
-      position: absolute; left: 0; opacity: 0; color: #4ade80; font-weight: bold;
-      pointer-events: none; white-space: nowrap; transform: translateY(5px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-    .copy-link.copied .label { opacity: 0; transform: translateY(-5px); }
-    .copy-link.copied .status { opacity: 1; transform: translateY(0); }
 
     /* --- CONTENT --- */
     .content-wrapper { position: relative; z-index: 2; width: 100%; padding-top: 100px; padding-bottom: 200px; }
@@ -68,147 +31,59 @@
     .works-title { font-family: 'JetBrains Mono', monospace; font-size: 3rem; margin-bottom: 15px; text-transform: uppercase; }
     .works-subtitle { color: #bbb; font-size: 1.1rem; max-width: 600px; line-height: 1.6; }
 
-    /* --- INDEX & THREEJS CONTAINER --- */
-    #index-container {
-      position: relative; 
-      width: 100%; 
-      height: 350px;
-      background: linear-gradient(90deg, #050505 0%, rgba(15,15,15,0.4) 100%); 
-      border: 1px solid #1a1a1a;
-      margin-top: 40px; 
-      display: flex;
-    }
-
-    #index-ui { 
-      flex: 1;
-      padding: 40px; 
-      display: flex;
-      flex-direction: column;
-      z-index: 2;
-    }
-
-    .index-label { 
-      font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; 
-      letter-spacing: 5px; color: var(--accent); margin-bottom: 30px; text-transform: uppercase; 
-    }
-
-    #auto-index { 
-      display: flex;
-      flex-direction: column;
-      flex-wrap: wrap; 
-      max-height: 220px;
-      gap: 12px 60px;
-      overflow-y: auto;
-      scrollbar-width: none;
-    }
-    #auto-index::-webkit-scrollbar { display: none; }
-
-    .index-item { 
-      font-family: 'JetBrains Mono', monospace;
-      color: #aaa;
-      text-decoration: none; 
-      font-size: 0.8rem; 
-      transition: 0.2s ease;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-    }
-    .index-item::before {
-      counter-increment: item-counter;
-      content: "ID_0" counter(item-counter);
-      font-size: 0.6rem; color: var(--accent); margin-right: 15px; opacity: 0.6;
-    }
+    /* --- INDEX --- */
+    #index-container { position: relative; width: 100%; height: 350px; background: linear-gradient(90deg, #050505 0%, rgba(15,15,15,0.4) 100%); border: 1px solid #1a1a1a; margin-top: 40px; display: flex; overflow: hidden; }
+    #index-ui { flex: 1; padding: 40px; display: flex; flex-direction: column; z-index: 10; counter-reset: item-counter; }
+    .index-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 5px; color: var(--accent); margin-bottom: 30px; text-transform: uppercase; }
+    
+    #auto-index { display: flex; flex-direction: column; flex-wrap: wrap; max-height: 220px; gap: 12px 60px; }
+    .index-item { font-family: 'JetBrains Mono', monospace; color: #aaa; text-decoration: none; font-size: 0.8rem; transition: 0.2s ease; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; }
+    .index-item::before { counter-increment: item-counter; content: "ID_" counter(item-counter, decimal-leading-zero); font-size: 0.6rem; color: var(--accent); margin-right: 15px; opacity: 0.6; }
     .index-item:hover { color: #fff; transform: translateX(8px); }
 
-    #three-canvas-container { 
-      width: 40%; 
-      height: 100%; 
-      border-left: 1px solid #1a1a1a;
-      background: #000;
-      position: relative;
-    }
+    #three-canvas-container { width: 40%; height: 100%; border-left: 1px solid #1a1a1a; background: #000; position: relative; }
 
-    /* --- PROJECT LAYOUT --- */
+    /* --- PROJECTS --- */
     .project-list-wrapper { display: flex; flex-direction: column; gap: 150px; }
     .project-entry { width: 100%; scroll-margin-top: 100px; }
     .project-title { font-family: 'JetBrains Mono', monospace; font-size: 2.2rem; margin-bottom: 8px; text-transform: uppercase; }
     .project-tagline { color: #888; font-size: 0.8rem; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px; }
     
-    .project-media-grid { 
-      display: grid;
-      grid-template-columns: repeat(12, 1fr); 
-      grid-gap: 8px; 
-      margin-bottom: 25px;
-    }
-    
-    .project-media-grid > * { 
-      grid-column: span 6;
-      background: #111;
-      border: 1px solid #1a1a1a;
-      border-radius: 2px;
-    }
+    .project-media-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-gap: 8px; margin-bottom: 25px; }
+    .project-media-grid > * { grid-column: span 6; background: #111; border: 1px solid #1a1a1a; overflow: hidden; }
 
-    .project-media-grid .video-wrapper { grid-column: span 12; aspect-ratio: 16 / 9; }
-    .project-media-grid img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 16 / 11; cursor: zoom-in; transition: transform 0.3s ease; }
-    .project-media-grid img:hover { transform: scale(1.02); }
-
-    .video-wrapper { position: relative; cursor: pointer; }
-    .video-cover {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background-size: cover; background-position: center;
-      z-index: 5; display: flex; align-items: center; justify-content: center;
-      transition: opacity 0.4s ease;
-    }
-    .custom-play-btn {
-      width: 60px; height: 60px; background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(5px); border: 1px solid #fff;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      transition: 0.3s;
-    }
-    .custom-play-btn::after {
-      content: ''; border-top: 10px solid transparent; border-bottom: 10px solid transparent;
-      border-left: 18px solid white; margin-left: 5px;
-    }
-    .video-wrapper:hover .custom-play-btn { border-color: var(--accent); box-shadow: 0 0 15px rgba(38, 201, 223, 0.4); transform: scale(1.1); }
+    .video-wrapper { position: relative; cursor: pointer; grid-column: span 12; aspect-ratio: 16 / 9; }
+    .video-cover { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 5; display: flex; align-items: center; justify-content: center; transition: opacity 0.4s ease; }
+    .custom-play-btn { width: 60px; height: 60px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); border: 1px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s ease; }
+    .custom-play-btn::after { content: ''; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 18px solid white; margin-left: 5px; }
+    .video-wrapper:hover .custom-play-btn { border-color: var(--accent); box-shadow: 0 0 20px rgba(38, 201, 223, 0.6); transform: scale(1.1); }
     .video-wrapper:hover .custom-play-btn::after { border-left-color: var(--accent); }
 
-    iframe, video { width: 100%; height: 100%; object-fit: cover; border: none; }
-    .project-description { color: #bbb; font-size: 1rem; line-height: 1.8; max-width: 750px; }
+    iframe { width: 100%; height: 100%; border: none; pointer-events: auto; }
+    img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    /* --- MOBILE REFINEMENTS --- */
     @media (max-width: 1100px) {
-      #index-container { flex-direction: column; height: auto; }
-      #index-ui { padding: 30px 20px; align-items: flex-start; }
-      #auto-index { flex-direction: column; align-items: flex-start; flex-wrap: nowrap; max-height: none; width: 100%; }
-      .index-item { width: 100%; justify-content: flex-start; padding: 5px 0; }
-      #three-canvas-container { 
-        width: 100%; 
-        height: 300px; /* Explicit height ensures it won't disappear */
-        border-left: none; 
-        border-top: 1px solid #1a1a1a; 
-      }
       .main-nav { position: relative; top: 0; left: 0; padding: 40px; width: 100%; }
-      .works-container { margin: 0 auto; max-width: 92%; }
+      .works-container { margin: 0 auto; max-width: 90%; }
+      #index-container { flex-direction: column; height: auto; }
+      #index-ui { padding: 30px 20px; }
+      #auto-index { flex-direction: column; flex-wrap: nowrap; max-height: none; align-items: flex-start; }
+      .index-item { width: 100%; justify-content: flex-start; padding: 8px 0; }
+      #three-canvas-container { width: 100% !important; height: 300px; border-left: none; border-top: 1px solid #1a1a1a; }
       .project-media-grid > * { grid-column: span 12 !important; }
-      .works-title { font-size: 2.4rem; }
     }
   </style>
 </head>
 <body>
 
   <div id="transition-overlay"></div>
-  
+
   <nav class="main-nav">
     <div class="nav-logo">MG. Lawless</div>
     <div class="nav-links">
       <a href="./">Home</a>
       <a href="works.html" style="color: #fff;">Works</a>
       <a href="blog.html">Blog</a>
-      <div class="copy-link" id="copyEmail">
-        <span class="label">Copy Email</span>
-        <span class="status">Email Copied ✓</span>
-      </div>
     </div>
   </nav>
 
@@ -232,14 +107,13 @@
   </div>
 
   <script>
-    function initIndexParticles() {
+    function initThree() {
       const container = document.getElementById('three-canvas-container');
       if (!container) return;
-
+      
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(container.clientWidth, container.clientHeight);
       container.appendChild(renderer.domElement);
@@ -274,48 +148,45 @@
       });
     }
 
-    function playVideo(cover) {
-      const iframe = cover.parentElement.querySelector('iframe');
-      iframe.src += "&autoplay=1";
-      cover.style.opacity = '0';
-      setTimeout(() => cover.style.display = 'none', 400);
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => { document.getElementById('transition-overlay').style.opacity = '0'; }, 100);
 
       fetch('works.json')
         .then(res => res.json())
         .then(data => {
-          document.getElementById('auto-index').innerHTML = data.map((p, idx) => `<a href="#proj-${idx}" class="index-item">${p.title}</a>`).join('');
-          document.getElementById('works-list').innerHTML = data.map((p, idx) => {
-            const videoId = p.media[0].url.split('v=')[1]?.split('&')[0];
-            return `
-            <section class="project-entry" id="proj-${idx}">
-              <h1 class="project-title">${p.title}</h1>
-              <p class="project-tagline">${p.tagline}</p>
-              <div class="project-media-grid">
-                <div class="video-wrapper" onclick="playVideo(this.querySelector('.video-cover'))">
-                  <div class="video-cover" style="background-image: url('https://img.youtube.com/vi/${videoId}/maxresdefault.jpg')">
-                    <div class="custom-play-btn"></div>
-                  </div>
-                  <iframe src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>
-                ${p.media.slice(1).map(m => `<img src="${m.url}">`).join('')}
-              </div>
-              <p class="project-description">${p.description || ''}</p>
-            </section>`;
-          }).join('');
-          
-          initIndexParticles();
-        });
+          const indexList = document.getElementById('auto-index');
+          const worksList = document.getElementById('works-list');
 
-      document.getElementById('copyEmail').addEventListener('click', function() {
-        navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
-          this.classList.add('copied');
-          setTimeout(() => this.classList.remove('copied'), 2000);
+          indexList.innerHTML = data.map((p, i) => `<a href="#proj-${i}" class="index-item">${p.title}</a>`).join('');
+
+          worksList.innerHTML = data.map((p, i) => {
+            let mediaHTML = '';
+            p.media.forEach(item => {
+              if (item.type === 'video') {
+                const id = item.url.includes('v=') ? item.url.split('v=')[1].split('&')[0] : item.url.split('/').pop();
+                mediaHTML += `
+                  <div class="video-wrapper" onclick="this.querySelector('iframe').src+='&autoplay=1'; this.querySelector('.video-cover').style.opacity='0'; setTimeout(()=>this.querySelector('.video-cover').style.display='none', 400)">
+                    <div class="video-cover" style="background-image: url('https://img.youtube.com/vi/${id}/maxresdefault.jpg')">
+                      <div class="custom-play-btn"></div>
+                    </div>
+                    <iframe src="https://www.youtube.com/embed/${id}?modestbranding=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                  </div>`;
+              } else {
+                mediaHTML += `<img src="${item.url}" loading="lazy">`;
+              }
+            });
+
+            return `
+              <section class="project-entry" id="proj-${i}">
+                <h2 class="project-title">${p.title}</h2>
+                <p class="project-tagline">${p.tagline || ''}</p>
+                <div class="project-media-grid">${mediaHTML}</div>
+                <p class="project-description">${p.description || ''}</p>
+              </section>`;
+          }).join('');
+
+          initThree();
         });
-      });
     });
   </script>
 </body>
