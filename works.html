@@ -10,7 +10,7 @@
   <style>
     :root { 
       --accent: #26c9df; 
-      --text-dim: #999; /* Brightened from #666 */
+      --text-dim: #999; 
       --nav-width: 250px; 
     }
     
@@ -103,14 +103,13 @@
       pointer-events: auto;
       counter-reset: item-counter;
       overflow-y: auto;
-      scrollbar-width: none; /* Hides scrollbar in Firefox */
+      scrollbar-width: none;
     }
-    /* Hides scrollbar in Chrome/Safari */
     #auto-index::-webkit-scrollbar { display: none; }
 
     .index-item { 
       font-family: 'JetBrains Mono', monospace;
-      color: #aaa; /* Brightened from #666 */
+      color: #aaa;
       text-decoration: none; 
       font-size: 0.8rem; 
       transition: 0.2s ease;
@@ -150,7 +149,6 @@
       display: grid;
       grid-template-columns: repeat(12, 1fr); 
       grid-gap: 8px; 
-      grid-auto-flow: dense; 
       margin-bottom: 25px;
     }
     
@@ -164,11 +162,7 @@
       border-radius: 2px;
     }
 
-    .project-media-grid .video-wrapper {
-      grid-column: span 12; 
-      aspect-ratio: 16 / 9;
-    }
-
+    .project-media-grid .video-wrapper { grid-column: span 12; aspect-ratio: 16 / 9; }
     .project-media-grid img { 
       width: 100%; height: 100%;
       object-fit: cover; display: block;
@@ -176,16 +170,8 @@
       cursor: zoom-in;
     }
 
-    .project-media-grid img:hover { 
-      z-index: 10; transform: scale(1.02); 
-    }
+    .project-media-grid img:hover { z-index: 10; transform: scale(1.02); }
 
-    @media (min-width: 900px) {
-      .project-media-grid > * { grid-column: span 4; }
-      .project-media-grid .video-wrapper { grid-column: span 8; } 
-    }
-
-    /* --- VIDEO PLAYER & HOVER FIX --- */
     .video-wrapper { position: relative; cursor: pointer; }
     .video-cover {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -204,28 +190,24 @@
       border-left: 18px solid white; margin-left: 5px;
     }
 
-    /* FIX: Glow effect on hover */
     .video-wrapper:hover .custom-play-btn {
       border-color: var(--accent);
       box-shadow: 0 0 15px rgba(38, 201, 223, 0.4);
       transform: scale(1.1);
     }
-    .video-wrapper:hover .custom-play-btn::after {
-      border-left-color: var(--accent);
-    }
+    .video-wrapper:hover .custom-play-btn::after { border-left-color: var(--accent); }
 
     iframe, video { width: 100%; height: 100%; object-fit: cover; border: none; }
-
     .project-description { color: #bbb; font-size: 1rem; line-height: 1.8; max-width: 750px; }
 
-    /* --- LIGHTBOX & ARROWS --- */
+    /* --- LIGHTBOX --- */
     #lightbox {
       position: fixed; z-index: 10000; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.95); display: none; align-items: center; justify-content: center;
       opacity: 0; transition: opacity 0.3s ease;
     }
     #lightbox.active { display: flex; opacity: 1; }
-    #lightbox img { max-width: 85%; max-height: 85%; border-radius: 4px; object-fit: contain; z-index: 10001; }
+    #lightbox img { max-width: 85%; max-height: 85%; border-radius: 4px; object-fit: contain; }
 
     .lightbox-arrow {
       position: absolute; top: 50%; transform: translateY(-50%);
@@ -254,13 +236,23 @@
     .social-links a:hover .social-icon { stroke: #fff; transform: translateY(-3px); }
     .footer-text { font-size: 0.65rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
 
+    /* --- MOBILE OVERRIDES --- */
     @media (max-width: 1100px) {
       #index-container { flex-direction: column; height: auto; }
-      #three-canvas-container { width: 100%; height: 200px; border-left: none; border-top: 1px solid #1a1a1a; }
+      #index-ui { padding: 30px 20px; align-items: flex-start; }
+      #auto-index { 
+        display: flex; flex-direction: column; align-items: flex-start; 
+        flex-wrap: nowrap; max-height: none; width: 100%; 
+      }
+      .index-item { width: 100%; justify-content: flex-start; }
+      #three-canvas-container { 
+        width: 100% !important; height: 250px; 
+        border-left: none; border-top: 1px solid #1a1a1a; 
+      }
       .main-nav { position: relative; top: 0; left: 0; padding: 40px; width: 100%; }
       .works-container { margin: 0 auto; max-width: 90%; }
       .project-media-grid > * { grid-column: span 12 !important; }
-      #auto-index { flex-wrap: nowrap; max-height: none; }
+      .works-title { font-size: 2.2rem; }
     }
   </style>
 </head>
@@ -336,6 +328,9 @@
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      
+      // High-definition fix for mobile
+      renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(container.offsetWidth, container.offsetHeight);
       container.appendChild(renderer.domElement);
 
@@ -381,13 +376,6 @@
       setTimeout(() => { coverElement.style.display = 'none'; }, 400);
     }
 
-    function playLocalVideo(coverElement) {
-      const video = coverElement.parentElement.querySelector('video');
-      video.muted = false; video.controls = true; video.play();
-      coverElement.style.opacity = '0';
-      setTimeout(() => { coverElement.style.display = 'none'; }, 400);
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
       const overlay = document.getElementById('transition-overlay');
       const lightbox = document.getElementById('lightbox');
@@ -402,11 +390,6 @@
         lightbox.classList.add('active');
       };
 
-      const closeLightbox = (e) => {
-        if (e.target.tagName !== 'BUTTON') lightbox.classList.remove('active');
-      };
-      lightbox.addEventListener('click', closeLightbox);
-
       const navigate = (dir) => {
         currentMediaIndex = (currentMediaIndex + dir + allMediaUrls.length) % allMediaUrls.length;
         lightboxImg.src = allMediaUrls[currentMediaIndex];
@@ -414,18 +397,6 @@
 
       document.getElementById('prevBtn').addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
       document.getElementById('nextBtn').addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
-
-      document.addEventListener('keydown', (e) => {
-        if (!lightbox.classList.contains('active')) return;
-        if (e.key === "ArrowLeft") navigate(-1);
-        if (e.key === "ArrowRight") navigate(1);
-        if (e.key === "Escape") lightbox.classList.remove('active');
-      });
-
-      window.addEventListener('scroll', () => {
-        if (window.scrollY > 500) backToTop.classList.add('visible');
-        else backToTop.classList.remove('visible');
-      });
 
       fetch('works.json')
         .then(res => res.json())
@@ -446,7 +417,7 @@
               <p class="project-tagline">${project.tagline}</p>
               <div class="project-media-grid">
                 ${project.media.map(item => {
-                  if(item.type === 'video' && item.url.includes('youtube.com')) {
+                  if(item.type === 'video') {
                     const videoId = item.url.includes('embed/') ? item.url.split('embed/')[1].split('?')[0] : item.url.split('v=')[1].split('&')[0];
                     return `
                       <div class="video-wrapper" onclick="playVideo(this.querySelector('.video-cover'))">
@@ -456,19 +427,10 @@
                         <iframe src="https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&color=white" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                       </div>`;
                   }
-                  if(item.type === 'video') {
-                    return `
-                      <div class="video-wrapper" onclick="playLocalVideo(this.querySelector('.video-cover'))">
-                        <div class="video-cover" style="background-image: url('${item.poster || ''}')">
-                          <div class="custom-play-btn"></div>
-                        </div>
-                        <video src="${item.url}" loop muted playsinline></video>
-                      </div>`;
-                  }
                   return `<img src="${item.url}" alt="${project.title}" onclick="openLightbox('${item.url}')">`;
                 }).join('')}
               </div>
-              ${project.description ? `<p class="project-description">${project.description}</p>` : ''}
+              <p class="project-description">${project.description || ''}</p>
             </section>
           `}).join('');
 
@@ -479,14 +441,6 @@
         navigator.clipboard.writeText('maroggebriel@gmail.com').then(() => {
           this.classList.add('copied');
           setTimeout(() => this.classList.remove('copied'), 2000);
-        });
-      });
-
-      document.querySelectorAll('.transition-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          overlay.style.opacity = '1';
-          setTimeout(() => { window.location.href = link.href; }, 600);
         });
       });
     });
